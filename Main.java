@@ -38,7 +38,21 @@ public class Main {
 
         Server myServer = new Server();
         Client myClient = new Client(args[1]);
-        myClient.run();
-        myServer.run();
+        //myClient.run();
+        //myServer.run();
+
+        Thread t1 = new Thread(myServer);
+        Thread t2 = new Thread(myClient);
+
+        t1.start();
+        t2.start();
+        try{
+
+            t1.join();
+            t2.join();
+        }
+        catch(InterruptedException e){
+            LoggerUtil.getLogger().severe(e.getMessage());
+        }
     }
 }
