@@ -24,7 +24,7 @@ public class Server implements Runnable{
                 int port = receivePacket.getPort();
                 String capitalizedSentence
                         = sentence.toUpperCase();
-                sendData = sentence.getBytes();
+                sendData = capitalizedSentence.getBytes();
                 DatagramPacket sendPacket
                         = new DatagramPacket(sendData,
                                 sendData.length, ip, port);
