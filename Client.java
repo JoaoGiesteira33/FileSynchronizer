@@ -25,7 +25,7 @@ public class Client implements Runnable {
                 sendData = sentence.getBytes();
                 System.out.println("Packet " + counter + " was sent.");
                 DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length,
-                        ip, 8989);
+                        ip, 8888);
                 clientSocket.send(sendPacket);
                 counter++;
             }
@@ -34,7 +34,7 @@ public class Client implements Runnable {
             sendData = "&&&".getBytes();
 
             DatagramPacket sendPacketEnd = new DatagramPacket(sendData, sendData.length,
-                    ip, 8989);
+                    ip, 8888);
             clientSocket.send(sendPacketEnd);
 
             DatagramPacket receivePacket = new DatagramPacket(receiveData,
