@@ -37,7 +37,7 @@ public class Main {
         files_to_sync(folder);
 
         Server myServer = new Server();
-        Client myClient = new Client(args[1]);
+        Client myClient = new Client(ips);
         
         Thread t1 = new Thread(myServer);
         Thread t2 = new Thread(myClient);

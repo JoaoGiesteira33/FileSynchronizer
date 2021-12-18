@@ -1,19 +1,27 @@
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Client implements Runnable {
-    String ipA;
+    List<InetAddress> ips;
 
-    public Client(String ipA) {
-        this.ipA = ipA;
+    public Client(List<String> ipsString) {
+        this.ips = new ArrayList<>();
+        try{
+            for(String ip : ipsString){
+                this.ips.add(InetAddress.getByName(ip));
+            }
+        }catch(UnknownHostException e){
+            LoggerUtil.getLogger().severe(e.getMessage());
+        }
     }
 
     public void run() {
         try {
             BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
             DatagramSocket clientSocket = new DatagramSocket(); // creates a door for the client process
-            InetAddress ip = InetAddress.getByName(ipA); // address of destination
-
+            
             byte[] sendData = new byte[1024]; // hold send data the client receives
             byte[] receiveData = new byte[1024]; // hold received data the client receives
 
@@ -23,9 +31,11 @@ public class Client implements Runnable {
             while (!(sentence = inFromUser.readLine()).equals(".")) {
                 sendData = sentence.getBytes();
                 System.out.println("Packet " + counter + " was sent.");
-                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length,
-                        ip, 8888);
-                clientSocket.send(sendPacket);
+                for(InetAddress i : this.ips){
+                    DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length,
+                    i, 8888);
+                    clientSocket.send(sendPacket);
+                }
                 counter++;
             }
 
@@ -33,9 +43,11 @@ public class Client implements Runnable {
             System.out.println("Sending &&& to terminate!");
             sendData = "&&&".getBytes();
 
-            DatagramPacket sendPacketEnd = new DatagramPacket(sendData, sendData.length,
-                    ip, 8888);
-            clientSocket.send(sendPacketEnd);
+            for(InetAddress i : this.ips){
+                DatagramPacket sendPacketEnd = new DatagramPacket(sendData, sendData.length,
+                i, 8888);
+                clientSocket.send(sendPacketEnd);
+            }
 
             DatagramPacket receivePacket = new DatagramPacket(receiveData,
                     receiveData.length);
