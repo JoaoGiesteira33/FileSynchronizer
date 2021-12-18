@@ -10,6 +10,7 @@ public class Client implements Runnable {
 
     public void run() {
         try {
+            System.out.println("Ola 1.1");
             BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
             DatagramSocket clientSocket = new DatagramSocket(); // creates a door for the client process
             InetAddress ip = InetAddress.getByName(ipA); // address of destination
@@ -24,7 +25,7 @@ public class Client implements Runnable {
                 sendData = sentence.getBytes();
                 System.out.println("Packet " + counter + " was sent.");
                 DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length,
-                        ip, 8888);
+                        ip, 0);
                 clientSocket.send(sendPacket);
                 counter++;
             }
@@ -43,6 +44,7 @@ public class Client implements Runnable {
             System.out.println("FROM SERVER: "
                     + modifiedSentence);
             clientSocket.close();
+            System.out.println("Ola 2.1");
         } catch (SocketException ex) {
             LoggerUtil.getLogger().severe(ex.getMessage());
         } catch (UnknownHostException ex) {

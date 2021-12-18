@@ -8,6 +8,7 @@ public class Server implements Runnable{
             byte[] receiveData = new byte[1024];
             byte[] sendData = new byte[1024];
             while (true) {
+                System.out.println("Ola 1");
                 DatagramPacket receivePacket
                         = new DatagramPacket(receiveData,
                                 receiveData.length);
@@ -29,6 +30,7 @@ public class Server implements Runnable{
                         = new DatagramPacket(sendData,
                                 sendData.length, ip, port);
                 serverSocket.send(sendPacket);
+                System.out.println("Ola 2");
             }
         } catch (Exception e) {
             LoggerUtil.getLogger().severe(e.getMessage());
