@@ -1,0 +1,69 @@
+FT-Rapid Protocol
+
+1) Introduction
+
+2) Initial Connection Protocol
+
+3) FT-Rapid Packets
+
+    FT-Rapid tem (X) tipo de pacotes:
+
+          opcode  operation
+            1       Read Request (RRQ)
+            2       Write Request (WRQ)
+            3       Data (DATA)
+            4       Acknowledgement (ACK)
+            5       Error (ERROR)
+
+    3.1) Read Request (RRQ)
+
+           1byte   1byte   string
+        +--------+------+----------+
+        | opcode | size | filename |
+        +--------+------+----------+
+
+    3.2) Write Request (WRQ)
+
+           1byte    string    1byte
+        +--------+----------+-------+
+        | opcode | filename |   0   |
+        +--------+----------+-------+
+        
+    3.3) Data (DATA)
+        
+           1byte    3 bytes    nbytes
+        +--------+-----------+--------+
+        | opcode |  Packet # |  Data  |
+        +--------+-----------+--------+    
+
+        Se a data a ser transferida tiver 256 bytes significa que ainda há mais informação a transferir.
+         Quando tiver entre 0 e 255 bytes significa que a transferência chegou ao fim.
+          O primeiro número de pacote será sempre 1 pois 0 está reservado para write requests.
+
+    3.4) Acknowledgement (ACK)
+
+           1byte    3 bytes    
+        +--------+-----------+
+        | opcode |  Packet # |
+        +--------+-----------+
+         
+        O número do pacote aqui será referente ao pacote a ser aknowledged. Write recebem sempre um 0 como ACK.
+
+    3.5) Error (ERROR)
+
+           1byte     1byte    
+        +--------+-----------+
+        | opcode |  Error #  |
+        +--------+-----------+         
+
+        0 - Não Defenido
+        1 - Ficheiro Inexistente
+        2 - Sem Permissão
+        ...
+
+4) Normal Termination
+
+    No final da transferência, quando o pacote de data tem menos de 256 bytes,
+     o acknowledger faz uma espera para garantir que o seu último ACK não foi perdido.
+      Este terá sido perdido caso receba outro DATA. 
+
