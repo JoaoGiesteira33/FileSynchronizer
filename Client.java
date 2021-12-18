@@ -18,7 +18,7 @@ public class Client implements Runnable {
             byte[] sendData = new byte[1024]; // hold send data the client receives
             byte[] receiveData = new byte[1024]; // hold received data the client receives
 
-            String sentence = inFromUser.readLine();
+            String sentence;
             int counter = 1;
 
             while ((sentence = inFromUser.readLine()) != null) {
