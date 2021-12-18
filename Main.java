@@ -38,9 +38,7 @@ public class Main {
 
         Server myServer = new Server();
         Client myClient = new Client(args[1]);
-        //myClient.run();
-        //myServer.run();
-
+        
         Thread t1 = new Thread(myServer);
         Thread t2 = new Thread(myClient);
 
