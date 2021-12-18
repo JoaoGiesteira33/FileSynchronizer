@@ -18,8 +18,8 @@ public class Server implements Runnable{
                         receivePacket.getData());
                 
                 if(receivePacket.getData() != "&&&".getBytes()){
-                    System.out.println("Receiver DATA!!!");
-                    System.out.println(receivePacket.getData());
+                    System.out.println("Received DATA!!!");
+                    System.out.println(receivePacket.getData().toString());
                 }
                 
                 InetAddress ip
