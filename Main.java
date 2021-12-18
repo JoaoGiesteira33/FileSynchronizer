@@ -38,7 +38,7 @@ public class Main {
 
         Server myServer = new Server();
         Client myClient = new Client(args[1]);
-        myServer.run();
         myClient.run();
+        myServer.run();
     }
 }

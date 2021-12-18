@@ -17,8 +17,10 @@ public class Server implements Runnable{
                 String sentence = new String(
                         receivePacket.getData());
                 
-                if(receivePacket.getData() != "&&&".getBytes())
+                if(receivePacket.getData() != "&&&".getBytes()){
+                    System.out.println("Receiver DATA!!!");
                     System.out.println(receivePacket.getData());
+                }
                 
                 InetAddress ip
                         = receivePacket.getAddress();
