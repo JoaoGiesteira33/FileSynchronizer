@@ -20,7 +20,7 @@ public class Client implements Runnable {
             String sentence;
             int counter = 1;
 
-            while ((sentence = inFromUser.readLine()) != null) {
+            while (!(sentence = inFromUser.readLine()).equals(".")) {
                 sendData = sentence.getBytes();
                 System.out.println("Packet " + counter + " was sent.");
                 DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length,
@@ -30,6 +30,7 @@ public class Client implements Runnable {
             }
 
             inFromUser.close();
+            System.out.println("Sending &&& to terminate!");
             sendData = "&&&".getBytes();
 
             DatagramPacket sendPacketEnd = new DatagramPacket(sendData, sendData.length,

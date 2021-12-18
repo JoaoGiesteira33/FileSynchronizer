@@ -20,7 +20,7 @@ public class Server implements Runnable{
                 
                 if(receivePacket.getData() != "&&&".getBytes()){
                     System.out.println("Received DATA!!!");
-                    System.out.println(Arrays.toString(receivePacket.getData()));
+                    System.out.println(receivePacket.getData());
                 }
                 
                 InetAddress ip
