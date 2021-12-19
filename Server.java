@@ -13,9 +13,8 @@ public class Server implements Runnable{
                 //Servidor recebe nome de um ficheiro de algum cliente
                 DatagramPacket receivePacket = new DatagramPacket(receiveData,receiveData.length);
                 serverSocket.receive(receivePacket);
-                
                 Message received_m = new Message(receivePacket.getData());
-
+                LoggerUtil.getLogger().info("Pacote Recebido | IP: " + receivePacket.getAddress() + " | Port: " + receivePacket.getPort());
                 //Servidor confirma se mensagem é do tipo 1
                 if(received_m.getType() != 1){
                    LoggerUtil.getLogger().warning("Mensagem nao reconhecida! Tipo: " + received_m.getType());
@@ -24,35 +23,24 @@ public class Server implements Runnable{
                 //Servidor verificar se tem o ficheiro em memoria
                 String file_path = new String(received_m.getData());
                 LoggerUtil.getLogger().info("Write Request for new file: " + file_path);
+
                 if(Main.hasFile(file_path)){
                     LoggerUtil.getLogger().info("Request Accepted for file: " + file_path);
+                    File f = new File(file_path);
+                    Main.addFile(f);
+                    try{
+                        f.createNewFile();
+                    }
+                    catch(IOException e){
+                        LoggerUtil.getLogger().warning("Erro a criar ficheiro");
+                        //Enviar pacote com erro a criar ficheiro
+                        break;
+                    }
+                    //Depois de criar ficheiro agora sim abrir o handler com nova thread para transferencia do ficheiro
                 }
-                //FileDataHandler fdh = new fdh(aquiVaiOFile,receivePacket.getAddress(),receivePacket.getPort());
-                //Thread t = new Thread(fdh);
-                //t.start();
-                //else
-                //responder q n queremos ficheiro
-
-                /*
-                String sentence = new String(
-                        receivePacket.getData());
-                
-                if(receivePacket.getData() != "&&&".getBytes()){
-                    System.out.println("Received DATA!!!");
-                    System.out.println(receivePacket.getData());
+                else{
+                    LoggerUtil.getLogger().info("Request Declined for file: " + file_path);
                 }
-                
-                InetAddress ip
-                        = receivePacket.getAddress();
-                int port = receivePacket.getPort();
-                String capitalizedSentence
-                        = sentence.toUpperCase();
-                sendData = capitalizedSentence.getBytes();
-                DatagramPacket sendPacket
-                        = new DatagramPacket(sendData,
-                                sendData.length, ip, port);
-                serverSocket.send(sendPacket);
-                */
             }
         } catch (Exception e) {
             LoggerUtil.getLogger().severe(e.getMessage());

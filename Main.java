@@ -1,14 +1,23 @@
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Main {
-    private static String folder_to_sync;
-    private static List<File> files_to_sync;
+    private static String folderToSync;
+    private static List<File> filesToSync;
 
     public static String getFolder(){
-        return Main.folder_to_sync;
+        return Main.folderToSync;
+    }
+
+    public static void addFile(File f){
+        Main.filesToSync.add(f);
+    }
+
+    public static void updateFiles(){
+        Main.filesToSync = Main.files_to_sync(Main.getFolder());
     }
 
     //Ignorar nome da Pasta, pois pode mudar de cliente para cliente
@@ -18,7 +27,7 @@ public class Main {
         //Adicionar pasta atual
         String aux2 = Main.getFolder() + "/" + aux;
         //Verificar se existe
-        for(File f : Main.files_to_sync){
+        for(File f : Main.filesToSync){
             if(f.getPath().equals(aux2))
                 return true;
         }
@@ -46,7 +55,7 @@ public class Main {
             LoggerUtil.getLogger().warning("Argumentos insuficientes");
             return;
         }
-        folder_to_sync = args[0];
+        folderToSync = args[0];
         LoggerUtil.getLogger().info("Pasta a sincronizar=" + folder_to_sync);
 
         List<String> ips = new ArrayList<>();
@@ -55,11 +64,11 @@ public class Main {
             LoggerUtil.getLogger().info("IP" + i + "=" + args[i]);
         }
 
-        files_to_sync = files_to_sync(folder_to_sync);
+        Main.filesToSync = files_to_sync(Main.getFolder());
 
         
         Server myServer = new Server();
-        Client myClient = new Client(files_to_sync,ips);
+        Client myClient = new Client(Main.filesToSync,ips);
         
         Thread t1 = new Thread(myServer);
         Thread t2 = new Thread(myClient);
@@ -74,7 +83,6 @@ public class Main {
         }
         catch(InterruptedException e){
             LoggerUtil.getLogger().severe(e.getMessage());
-        }
-        
+        }   
     }
 }
