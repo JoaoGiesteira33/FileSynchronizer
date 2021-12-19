@@ -4,6 +4,27 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Main {
+    private static String folder_to_sync;
+    private static List<File> files_to_sync;
+
+    public static String getFolder(){
+        return Main.folder_to_sync;
+    }
+
+    //Ignorar nome da Pasta, pois pode mudar de cliente para cliente
+    public static boolean hasFile(String filePath){
+        //Cortar nome da Pasta
+        String aux = filePath.substring(filePath.indexOf("/")+1);
+        //Adicionar pasta atual
+        String aux2 = Main.getFolder() + "/" + aux;
+        //Verificar se existe
+        for(File f : Main.files_to_sync){
+            if(f.getPath().equals(aux2))
+                return true;
+        }
+        return false;
+    }
+
     public static List<File> files_to_sync(String folder) {
         File directory = new File(folder);
         List<File> resultList = new ArrayList<>();
@@ -25,7 +46,7 @@ public class Main {
             LoggerUtil.getLogger().warning("Argumentos insuficientes");
             return;
         }
-        String folder_to_sync = args[0];
+        folder_to_sync = args[0];
         LoggerUtil.getLogger().info("Pasta a sincronizar=" + folder_to_sync);
 
         List<String> ips = new ArrayList<>();
@@ -34,7 +55,8 @@ public class Main {
             LoggerUtil.getLogger().info("IP" + i + "=" + args[i]);
         }
 
-        List<File> files_to_sync = files_to_sync(folder_to_sync);
+        files_to_sync = files_to_sync(folder_to_sync);
+
         
         Server myServer = new Server();
         Client myClient = new Client(files_to_sync,ips);
@@ -45,8 +67,6 @@ public class Main {
         t1.start();
         t2.start();
         
-        System.out.println("Ola");
-
         try{
             t1.join();
             t1.join();
@@ -55,6 +75,6 @@ public class Main {
         catch(InterruptedException e){
             LoggerUtil.getLogger().severe(e.getMessage());
         }
-         
+        
     }
 }

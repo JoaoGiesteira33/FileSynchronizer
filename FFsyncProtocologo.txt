@@ -9,27 +9,19 @@ FT-Rapid Protocol
     FT-Rapid tem (X) tipo de pacotes:
 
           opcode  operation
-            1       Read Request (RRQ)
-            2       Write Request (WRQ)
+            1       WriteFileRequest (WFR)
             3       Data (DATA)
             4       Acknowledgement (ACK)
             5       Error (ERROR)
 
-    3.1) Read Request (RRQ)
+    3.1) WriteFileRequest (RRQ)
 
-           1byte   1byte   string
-        +--------+------+----------+
-        | opcode | size | filename |
-        +--------+------+----------+
+           1byte    string
+        +--------+----------+
+        | opcode | filename |
+        +--------+----------+
 
-    3.2) Write Request (WRQ)
-
-           1byte    string    1byte
-        +--------+----------+-------+
-        | opcode | filename |   0   |
-        +--------+----------+-------+
-        
-    3.3) Data (DATA)
+    3.2) Data (DATA)
         
            1byte    3 bytes    nbytes
         +--------+-----------+--------+
@@ -40,7 +32,7 @@ FT-Rapid Protocol
          Quando tiver entre 0 e 255 bytes significa que a transferência chegou ao fim.
           O primeiro número de pacote será sempre 1 pois 0 está reservado para write requests.
 
-    3.4) Acknowledgement (ACK)
+    3.3) Acknowledgement (ACK)
 
            1byte    3 bytes    
         +--------+-----------+
@@ -49,7 +41,7 @@ FT-Rapid Protocol
          
         O número do pacote aqui será referente ao pacote a ser aknowledged. Write recebem sempre um 0 como ACK.
 
-    3.5) Error (ERROR)
+    3.4) Error (ERROR)
 
            1byte     1byte    
         +--------+-----------+
@@ -57,7 +49,7 @@ FT-Rapid Protocol
         +--------+-----------+         
 
         0 - Não Defenido
-        1 - Ficheiro Inexistente
+        1 - Ficheiro Já Existe
         2 - Sem Permissão
         ...
 

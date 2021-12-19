@@ -48,7 +48,9 @@ public class Client implements Runnable {
                     clientSocket.receive(receivePacket);
                     Message receive_m = new Message(receivePacket.getData());
                     //Confirmar se resposta é afirmativa/negativa
-
+                    if(receive_m.getType() == 3){ //IF ACK
+                        //START SENDING FILE TO M.GETPORT
+                    }
                 }
             }
 
