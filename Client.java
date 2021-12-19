@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Client implements Runnable {
+    List<File> files;
     List<InetAddress> ips;
 
-    public Client(List<String> ipsString) {
+    public Client(List<File> files, List<String> ipsString) {
+        this.files = new ArrayList<>(files);
         this.ips = new ArrayList<>();
         try{
             for(String ip : ipsString){
@@ -28,6 +30,29 @@ public class Client implements Runnable {
             String sentence;
             int counter = 1;
 
+            //Enviar ficheiros deste computador, um a um, para todos os ips
+            //Se os pcs a receber estes ficheiros nao o tiverem vao pedir transferencia
+
+            for(File f : this.files){
+                String file_path = f.getPath();
+                Message send_m = new Message(1,file_path.getBytes());
+                sendData = send_m.getBytes();
+                for(InetAddress i : this.ips){
+                    //Envio da mensagem
+                    DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, i, 8888);
+                    clientSocket.send(sendPacket);
+                    //Esperar por resposta
+                    //Podemos ter que mexer nos setSoTimeout em situacoes como esta !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    DatagramPacket receivePacket = new DatagramPacket(receiveData,
+                    receiveData.length);
+                    clientSocket.receive(receivePacket);
+                    Message receive_m = new Message(receivePacket.getData());
+                    //Confirmar se resposta é afirmativa/negativa
+
+                }
+            }
+
+            /*
             while (!(sentence = inFromUser.readLine()).equals(".")) {
                 sendData = sentence.getBytes();
                 System.out.println("Packet " + counter + " was sent.");
@@ -38,6 +63,7 @@ public class Client implements Runnable {
                 }
                 counter++;
             }
+            */
 
             inFromUser.close();
             System.out.println("Sending &&& to terminate!");
