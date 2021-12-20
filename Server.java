@@ -41,6 +41,7 @@ public class Server implements Runnable{
 
                 if(!Main.hasFile(file_path)){
                     LoggerUtil.getLogger().info("Request Accepted for file: " + file_path);
+                    //AQUI TEMOS DE MUDAR O NOME DO FICHEIRO ACHO EU
                     File f = new File(file_path);
                     try{                     
                         f.createNewFile();
@@ -59,7 +60,7 @@ public class Server implements Runnable{
                 }
                 else{
                     LoggerUtil.getLogger().info("Request Declined for file: " + file_path);
-                    //Responder com Erro tipo 1
+                    //RESPONDER COM ERRO DO TIPO 1
                 }
             }
             for(Thread t : this.ths){

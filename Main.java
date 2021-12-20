@@ -56,7 +56,7 @@ public class Main {
             return;
         }
         folderToSync = args[0];
-        LoggerUtil.getLogger().info("Pasta a sincronizar=" + folder_to_sync);
+        LoggerUtil.getLogger().info("Pasta a sincronizar=" + folderToSync);
 
         List<String> ips = new ArrayList<>();
         for (int i = 1; i < args.length; i++) {

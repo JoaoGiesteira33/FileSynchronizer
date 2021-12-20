@@ -123,7 +123,7 @@ public class Client implements Runnable {
                     }
                     else if(receive_m.getType() == 4) //IF ERR
                     {
-
+                        //COMPLETAR SITUACAO ONDE RECEBEMOS UM ERRO/NAO QUER O FICHEIRO
                     }
                 }
             }

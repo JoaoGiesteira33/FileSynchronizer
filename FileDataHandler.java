@@ -24,6 +24,7 @@ public class FileDataHandler implements Runnable{
     }
 
     public void run(){
+        //FAZER TRY IO E FILENOT FOUND , FILENOTE FOUND MANDAR ERRO SEQUE
         //Antes de tudo enviar ACK para cliente do outro lado saber que queremos o ficheiro e começar a transferencia
         Server.sendAck(0, socket, this.ip, this.port);
         LoggerUtil.getLogger().info("Sent ACK | Receiving file");
@@ -59,14 +60,14 @@ public class FileDataHandler implements Runnable{
 
                 // Write the retrieved data to the file and print received data sequence number
                 outToFile.write(fileByteArray);
-                System.out.println("Received: Sequence number:" + foundLast);
+                LoggerUtil.getLogger().info("Received: Sequence number:" + foundLast);
 
                 // Send acknowledgement
-                sendAck(foundLast, socket, address, port);
+                Server.sendAck(foundLast, socket, ip, port);
             } else {
-                System.out.println("Expected sequence number: " + (foundLast + 1) + " but received " + sequenceNumber + ". DISCARDING");
+                LoggerUtil.getLogger().warning("Expected sequence number: " + (foundLast + 1) + " but received " + sequenceNumber + ". DISCARDING");
                 // Re send the acknowledgement
-                sendAck(foundLast, socket, address, port);
+                sendAck(foundLast, socket, ip, port);
             }
             // Check for last datagram
             if (flag) {
