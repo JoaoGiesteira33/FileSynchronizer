@@ -13,12 +13,7 @@ public class Message{
         this.type = Integer.valueOf(type).byteValue();
         this.data = data;
     }
-/*
-    public Message(int type, int data){
-        this.type = Integer.valueOf(type).byteValue();
-        this.data = new byte[]{Integer.valueOf(data).byteValue()};
-    }
-*/
+
     //Data Constructorbyte packetNumberArr[]
     public Message(int type, int packetNumber,int file_size, byte[] fileData){
         this.type = Integer.valueOf(type).byteValue();

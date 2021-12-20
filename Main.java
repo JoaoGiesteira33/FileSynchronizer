@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Main {
-    private static String folderToSync;
-    private static List<File> filesToSync;
+    public static String folderToSync;
+    public static List<File> filesToSync;
 
     public static String getFolder(){
         return Main.folderToSync;
@@ -68,7 +68,7 @@ public class Main {
 
         
         Server myServer = new Server();
-        Client myClient = new Client(Main.filesToSync,ips);
+        Client myClient = new Client(ips);
         
         Thread t1 = new Thread(myServer);
         Thread t2 = new Thread(myClient);

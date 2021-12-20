@@ -9,11 +9,9 @@ public class Server implements Runnable{
     List<Thread> ths = new ArrayList<>();
 
     public static void sendAck(int foundLast, DatagramSocket socket, InetAddress address, int port) throws IOException {
-        // send acknowledgement
         byte[] ack = new byte[4];
         Message ackMessage = new Message(3,foundLast);
         ack = ackMessage.getBytes();
-        // the datagram packet to be sent
         DatagramPacket acknowledgement = new DatagramPacket(ack, ack.length, address, port);
         socket.send(acknowledgement);
         LoggerUtil.getLogger().info("Sent ack: Sequence Number = " + foundLast);
@@ -21,25 +19,31 @@ public class Server implements Runnable{
 
     public void run(){
          try {
+             //Abrimos servidor na porta 8888
             DatagramSocket serverSocket = new DatagramSocket(8888);
-            byte[] receiveData = new byte[1024];
+            byte[] receiveData = new byte[128]; //Sabemos que vamos receber um pacote deste tamanho como primeira mensagem
 
             while (true) {
+
                 //Servidor recebe nome de um ficheiro de algum cliente
                 DatagramPacket receivePacket = new DatagramPacket(receiveData,receiveData.length);
                 serverSocket.receive(receivePacket);
                 Message received_m = new Message(receivePacket.getData());
                 LoggerUtil.getLogger().info("Pacote Recebido | IP: " + receivePacket.getAddress() + " | Port: " + receivePacket.getPort());
+                
                 //Servidor confirma se mensagem é do tipo 1
                 if(received_m.getType() != 1){
                    LoggerUtil.getLogger().warning("Mensagem nao reconhecida! Tipo: " + received_m.getType());
                    break;
                 }
+
                 //Servidor verificar se tem o ficheiro em memoria
                 String file_path = new String(received_m.getData());
+                //PROVAVELMENTE VAMOS TER QUE GUARDAR TAMANHO NO PACOTE PARA SABER AQUI MAS POR AGORA FICA ASSIM
+                System.out.println("FILE PATH: " + file_path); //TEMPORARIO, APENAS PARA TESTE ^^^^^^^
                 LoggerUtil.getLogger().info("Write Request for new file: " + file_path);
 
-                if(!Main.hasFile(file_path)){
+                if(!Main.hasFile(file_path)){ //Computador do Servidor não tem o ficheiro recebido
                     LoggerUtil.getLogger().info("Request Accepted for file: " + file_path);
                     //AQUI TEMOS DE MUDAR O NOME DO FICHEIRO ACHO EU
                     File f = new File(file_path);
@@ -48,11 +52,15 @@ public class Server implements Runnable{
                         Main.addFile(f);
                     }
                     catch(IOException e){
+                        //Enviar pacote de erro a criar ficheiro
                         LoggerUtil.getLogger().warning("Erro a criar ficheiro");
-                        //Enviar pacote com erro a criar ficheiro
+                        byte[] error = new byte[]{Integer.valueOf(4).byteValue(),Integer.valueOf(2).byteValue()};
+                        DatagramPacket errorPacket = new DatagramPacket(error, error.length,receivePacket.getAddress(),receivePacket.getPort());
+                        serverSocket.send(errorPacket);
                         break;
                     }
-                    //Depois de criar ficheiro agora sim abrir o handler com nova thread para transferencia do ficheiro
+
+                    //Depois de criar ficheiro abrir thread para fazer transferência do mesmo
                     FileDataHandler fdh = new FileDataHandler(f,receivePacket.getAddress(),receivePacket.getPort());
                     Thread t = new Thread(fdh);
                     ths.add(t);
@@ -60,7 +68,10 @@ public class Server implements Runnable{
                 }
                 else{
                     LoggerUtil.getLogger().info("Request Declined for file: " + file_path);
-                    //RESPONDER COM ERRO DO TIPO 1
+                    //Enviar pacote de erro de ficheiro já existente
+                    byte[] errorAlreadyExists = new byte[]{Integer.valueOf(4).byteValue(),Integer.valueOf(1).byteValue()};
+                    DatagramPacket errorAlreadyExistsPacket = new DatagramPacket(errorAlreadyExists, errorAlreadyExists.length,receivePacket.getAddress(),receivePacket.getPort());
+                    serverSocket.send(errorAlreadyExistsPacket);
                 }
             }
             for(Thread t : this.ths){
