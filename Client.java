@@ -37,7 +37,6 @@ public class Client implements Runnable {
         byte[] sendData = new byte[260];
         System.out.println("Sending file");
         int sequenceNumber = 0; // For order
-        boolean flag; // To see if we got to the end of the file
         int ackSequence = 0; // To see if the datagram was received correctly
 
         for (int i = 0; i < fileByteArray.length; i = i + 256) {
@@ -45,13 +44,6 @@ public class Client implements Runnable {
 
             // Create message
             Message m = new Message(2,sequenceNumber,Arrays.copyOfRange(fileByteArray,i,i+255));
-
-
-            if ((i + 256) >= fileByteArray.length) { // Have we reached the end of file?
-                flag = true;
-            } else {
-                flag = false;
-            }
 
             sendData = m.getBytes();
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, port); // The data to be sent

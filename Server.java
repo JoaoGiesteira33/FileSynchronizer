@@ -1,9 +1,24 @@
 import java.io.*;
 import java.net.*;
 import java.sql.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Server implements Runnable{
+    List<Thread> ths = new ArrayList<>();
+
+    private static void sendAck(int foundLast, DatagramSocket socket, InetAddress address, int port) throws IOException {
+        // send acknowledgement
+        byte[] ack = new byte[4];
+        Message ackMessage = new Message(3,foundLast);
+        ack = ackMessage.getBytes();
+        // the datagram packet to be sent
+        DatagramPacket acknowledgement = new DatagramPacket(ack, ack.length, address, port);
+        socket.send(acknowledgement);
+        LoggerUtil.getLogger().info("Sent ack: Sequence Number = " + foundLast);
+    }
+
     public void run(){
          try {
             DatagramSocket serverSocket = new DatagramSocket(8888);
@@ -26,8 +41,8 @@ public class Server implements Runnable{
 
                 if(!Main.hasFile(file_path)){
                     LoggerUtil.getLogger().info("Request Accepted for file: " + file_path);
-                    try{
-                        File f = new File(file_path);
+                    File f = new File(file_path);
+                    try{                     
                         f.createNewFile();
                         Main.addFile(f);
                     }
@@ -37,10 +52,22 @@ public class Server implements Runnable{
                         break;
                     }
                     //Depois de criar ficheiro agora sim abrir o handler com nova thread para transferencia do ficheiro
+                    FileDataHandler fdh = new FileDataHandler(f,receivePacket.getAddress(),receivePacket.getPort());
+                    Thread t = new Thread(fdh);
+                    ths.add(t);
+                    t.start();
                 }
                 else{
                     LoggerUtil.getLogger().info("Request Declined for file: " + file_path);
                     //Responder com Erro tipo 1
+                }
+            }
+            for(Thread t : this.ths){
+                try{
+                    t.join();
+                }
+                catch(InterruptedException e){
+                    LoggerUtil.getLogger().severe(e.getMessage());
                 }
             }
         } catch (Exception e) {
