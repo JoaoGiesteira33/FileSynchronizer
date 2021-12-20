@@ -31,47 +31,46 @@ public class FileDataHandler implements Runnable{
             Server.sendAck(0, socket, this.ip, this.port);
             LoggerUtil.getLogger().info("Sent ACK | Receiving file");
             FileOutputStream outToFile = new FileOutputStream(this.f); 
-            boolean flag; // Have we reached end of file
-            int sequenceNumber = 0; // Order of sequences
-            int foundLast = 0; // The las sequence found
+            boolean flag; // Fim do ficheiro
+            int sequenceNumber = 0; 
+            int foundLast = 0;
             
             while (true) {
-                byte[] message = new byte[261]; // Where the data from the received datagram is stored
-                byte[] fileByteArray = new byte[256]; // Where we store the data to be writen to the file
+                byte[] message = new byte[261]; // Mensagem a receber, tamanho maximo
+                byte[] fileByteArray = new byte[256]; // Data do ficheiro, tamanho maximo
 
-                // Receive packet and retrieve the data
+                // Receber pacote
                 DatagramPacket receivedPacket = new DatagramPacket(message, message.length);
                 socket.receive(receivedPacket);
                 message = receivedPacket.getData(); // Data to be written to the file
                 Message received_m = new Message(message);
 
-                // Retrieve sequence number
+                // Obter número de sequência para verificar
                 sequenceNumber = received_m.getPacketNumber();
-                // Check if we reached last datagram (end of file) ATENCAO APARENTEMENTE PODE TER QUE SE MUDAR ISTO
+                // Verificar se chegamos ao fim do ficheiro
                 flag = received_m.isLastPacket();
 
-                // If sequence number is the last seen + 1, then it is correct
-                // We get the data from the message and write the ack that it has been received correctly
+                // Está correto se numero de sequncia for mais 1 que o visto anteriormente
                 if (sequenceNumber == (foundLast + 1)) {
-
-                    // set the last sequence number to be the one we just received
+                    // Atualizar último número de sequência recebido
                     foundLast = sequenceNumber;
 
                     // Data do ficheiro, apenas a partir do 5 byte é que começa
+                    //MUDAR CÓPIA DO FICHEIRO FAZENDO USO DO TAMANHO
                     System.arraycopy(message, 5, fileByteArray, 0, 255);
 
-                    // Write the retrieved data to the file and print received data sequence number
+                    // Escrever dados para o ficheiro
                     outToFile.write(fileByteArray);
                     LoggerUtil.getLogger().info("Received: Sequence number:" + foundLast);
 
-                    // Send acknowledgement
+                    // Enviar ACK
                     Server.sendAck(foundLast, socket, ip, port);
                 } else {
                     LoggerUtil.getLogger().warning("Expected sequence number: " + (foundLast + 1) + " but received " + sequenceNumber + ". DISCARDING");
-                    // Re send the acknowledgement
+                    // Reenviar ack
                     Server.sendAck(foundLast, socket, ip, port);
                 }
-                // Check for last datagram
+                // Se for último pacote do ficheiro podemos fechar
                 if (flag) {
                     outToFile.close();
                     break;
@@ -81,7 +80,7 @@ public class FileDataHandler implements Runnable{
             LoggerUtil.getLogger().severe(e.getMessage());
             //SEND ERROR PACKAGE
         } catch(IOException e){
-        LoggerUtil.getLogger().warning(e.getMessage());
+            LoggerUtil.getLogger().warning(e.getMessage());
         }
     }
 }
