@@ -1,3 +1,6 @@
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class Message{
@@ -9,10 +12,38 @@ public class Message{
         this.type = Integer.valueOf(type).byteValue();
         this.data = data;
     }
-
+/*
     public Message(int type, int data){
         this.type = Integer.valueOf(type).byteValue();
         this.data = new byte[]{Integer.valueOf(data).byteValue()};
+    }
+*/
+    //Data Constructorbyte packetNumberArr[]
+    public Message(int type, int packetNumber, byte[] fileData){
+        this.type = Integer.valueOf(type).byteValue();
+        byte packetNumberArr[] = new byte[3];
+        packetNumberArr[0] = (byte) ((packetNumber & 0x00FF0000) >> 16);
+        packetNumberArr[1] = (byte) ((packetNumber& 0x0000FF00) >> 8);
+        packetNumberArr[2] = (byte) ((packetNumber& 0x000000FF) >> 0);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try{
+            outputStream.write( packetNumberArr );
+            outputStream.write( fileData );
+        }
+        catch(IOException e){
+            LoggerUtil.getLogger().severe(e.getMessage());
+        }
+
+        this.data = outputStream.toByteArray( );
+    }
+
+    //Ack Constructor
+    public Message(int type, int packetNumber){
+        this.type = Integer.valueOf(type).byteValue();
+        this.data = new byte[3];
+        this.data[0] = (byte) ((packetNumber & 0x00FF0000) >> 16);
+        this.data[1] = (byte) ((packetNumber & 0x0000FF00) >> 8);
+        this.data[2] = (byte) ((packetNumber & 0x000000FF) >> 0);
     }
 
     public Message(byte[] byte_arr){
@@ -37,5 +68,13 @@ public class Message{
             res[i] = this.data[i-1];
         }
         return res;
+    }
+
+    public int getPacketNumber(){
+        if(this.type != 2)
+            return 0;
+        return  ((this.data[1] & 0xFF) << 16) | 
+                ((this.data[2] & 0xFF) << 8 ) | 
+                ((this.data[3] & 0xFF) << 0 );
     }
 }

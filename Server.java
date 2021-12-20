@@ -24,12 +24,12 @@ public class Server implements Runnable{
                 String file_path = new String(received_m.getData());
                 LoggerUtil.getLogger().info("Write Request for new file: " + file_path);
 
-                if(Main.hasFile(file_path)){
+                if(!Main.hasFile(file_path)){
                     LoggerUtil.getLogger().info("Request Accepted for file: " + file_path);
-                    File f = new File(file_path);
-                    Main.addFile(f);
                     try{
+                        File f = new File(file_path);
                         f.createNewFile();
+                        Main.addFile(f);
                     }
                     catch(IOException e){
                         LoggerUtil.getLogger().warning("Erro a criar ficheiro");
@@ -40,6 +40,7 @@ public class Server implements Runnable{
                 }
                 else{
                     LoggerUtil.getLogger().info("Request Declined for file: " + file_path);
+                    //Responder com Erro tipo 1
                 }
             }
         } catch (Exception e) {

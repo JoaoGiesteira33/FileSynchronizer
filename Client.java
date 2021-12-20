@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Client implements Runnable {
@@ -16,6 +17,73 @@ public class Client implements Runnable {
             }
         }catch(UnknownHostException e){
             LoggerUtil.getLogger().severe(e.getMessage());
+        }
+    }
+
+    private static byte[] readFileToByteArray(File file) {
+        FileInputStream fis = null;
+        byte[] bArray = new byte[(int) file.length()];
+        try {
+            fis = new FileInputStream(file);
+            fis.read(bArray);
+            fis.close();
+        } catch (IOException ioExp) {
+            LoggerUtil.getLogger().severe(ioExp.getMessage());
+        }
+        return bArray;
+    }
+
+    private void sendFile(DatagramSocket socket, byte[] fileByteArray, InetAddress address, int port) throws IOException {
+        byte[] sendData = new byte[260];
+        System.out.println("Sending file");
+        int sequenceNumber = 0; // For order
+        boolean flag; // To see if we got to the end of the file
+        int ackSequence = 0; // To see if the datagram was received correctly
+
+        for (int i = 0; i < fileByteArray.length; i = i + 256) {
+            sequenceNumber += 1;
+
+            // Create message
+            Message m = new Message(2,sequenceNumber,Arrays.copyOfRange(fileByteArray,i,i+255));
+
+
+            if ((i + 256) >= fileByteArray.length) { // Have we reached the end of file?
+                flag = true;
+            } else {
+                flag = false;
+            }
+
+            sendData = m.getBytes();
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, port); // The data to be sent
+            socket.send(sendPacket); // Sending the data
+            LoggerUtil.getLogger().info("Sent: Sequence number = " + sequenceNumber);
+            boolean ackRec; // Was the datagram received?
+
+            while (true) {
+                byte[] ack = new byte[4]; // Create another packet for datagram ackknowledgement
+                DatagramPacket ackpack = new DatagramPacket(ack, ack.length);
+
+                try {
+                    socket.setSoTimeout(50); // Waiting for the server to send the ack
+                    socket.receive(ackpack);
+                    Message received_m = new Message(ackpack.getData());
+                    ackSequence = received_m.getPacketNumber(); // Figuring the sequence number
+                    ackRec = true; // We received the ack
+                } catch (SocketTimeoutException e) {
+                    System.out.println("Socket timed out waiting for ack");
+                    ackRec = false; // We did not receive an ack
+                }
+
+                // If the package was received correctly next packet can be sent
+                if ((ackSequence == sequenceNumber) && (ackRec)) {
+                    LoggerUtil.getLogger().info("Ack received: Sequence Number = " + ackSequence);
+                    break;
+                } // Package was not received, so we resend it
+                else {
+                    socket.send(sendPacket);
+                    LoggerUtil.getLogger().warning("Resending: Sequence Number = " + sequenceNumber);
+                }
+            }
         }
     }
 
@@ -41,6 +109,7 @@ public class Client implements Runnable {
                     //Envio da mensagem
                     DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, i, 8888);
                     clientSocket.send(sendPacket);
+                    LoggerUtil.getLogger().info("Pacote enviado | IP: " + i + " | Port: 8888 | File:" + file_path);
                     //Esperar por resposta
                     //Podemos ter que mexer nos setSoTimeout em situacoes como esta !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     DatagramPacket receivePacket = new DatagramPacket(receiveData,
@@ -49,40 +118,17 @@ public class Client implements Runnable {
                     Message receive_m = new Message(receivePacket.getData());
                     //Confirmar se resposta é afirmativa/negativa
                     if(receive_m.getType() == 3){ //IF ACK
-                        //START SENDING FILE TO M.GETPORT
+                        LoggerUtil.getLogger().info("Iniciar transferencia do ficheiro " + file_path);
+                        byte[] fileByteArray = readFileToByteArray(f); // Array de bytes do ficheiro
+                        // Envio do ficheiro
+                        sendFile(clientSocket, fileByteArray, receivePacket.getAddress(), receivePacket.getPort()); 
+                    }
+                    else if(receive_m.getType() == 4) //IF ERR
+                    {
+
                     }
                 }
             }
-
-            /*
-            while (!(sentence = inFromUser.readLine()).equals(".")) {
-                sendData = sentence.getBytes();
-                System.out.println("Packet " + counter + " was sent.");
-                for(InetAddress i : this.ips){
-                    DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length,
-                    i, 8888);
-                    clientSocket.send(sendPacket);
-                }
-                counter++;
-            }
-            */
-
-            inFromUser.close();
-            System.out.println("Sending &&& to terminate!");
-            sendData = "&&&".getBytes();
-
-            for(InetAddress i : this.ips){
-                DatagramPacket sendPacketEnd = new DatagramPacket(sendData, sendData.length,
-                i, 8888);
-                clientSocket.send(sendPacketEnd);
-            }
-
-            DatagramPacket receivePacket = new DatagramPacket(receiveData,
-                    receiveData.length);
-            clientSocket.receive(receivePacket);
-            String modifiedSentence = new String(receivePacket.getData());
-            System.out.println("FROM SERVER: "
-                    + modifiedSentence);
             clientSocket.close();
         } catch (SocketException ex) {
             LoggerUtil.getLogger().severe(ex.getMessage());
