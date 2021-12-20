@@ -1,5 +1,6 @@
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
@@ -19,22 +20,24 @@ public class Message{
     }
 */
     //Data Constructorbyte packetNumberArr[]
-    public Message(int type, int packetNumber, byte[] fileData){
+    public Message(int type, int packetNumber,int file_size, byte[] fileData){
         this.type = Integer.valueOf(type).byteValue();
         byte packetNumberArr[] = new byte[3];
         packetNumberArr[0] = (byte) ((packetNumber & 0x00FF0000) >> 16);
         packetNumberArr[1] = (byte) ((packetNumber& 0x0000FF00) >> 8);
         packetNumberArr[2] = (byte) ((packetNumber& 0x000000FF) >> 0);
+        byte[] file_size_arr = new byte[]{Integer.valueOf(file_size).byteValue()};
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try{
             outputStream.write( packetNumberArr );
+            outputStream.write( file_size_arr );
             outputStream.write( fileData );
         }
         catch(IOException e){
             LoggerUtil.getLogger().severe(e.getMessage());
         }
 
-        this.data = outputStream.toByteArray( );
+        this.data = outputStream.toByteArray();
     }
 
     //Ack Constructor
@@ -76,5 +79,10 @@ public class Message{
         return  ((this.data[1] & 0xFF) << 16) | 
                 ((this.data[2] & 0xFF) << 8 ) | 
                 ((this.data[3] & 0xFF) << 0 );
+    }
+
+    public boolean isLastPacket(){
+        Byte b = this.data[4];
+        return(b.intValue() < 256 && this.getType() == 2);
     }
 }

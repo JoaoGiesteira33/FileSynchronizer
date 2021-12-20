@@ -34,16 +34,22 @@ public class Client implements Runnable {
     }
 
     private void sendFile(DatagramSocket socket, byte[] fileByteArray, InetAddress address, int port) throws IOException {
-        byte[] sendData = new byte[260];
+        byte[] sendData = new byte[261];
         System.out.println("Sending file");
         int sequenceNumber = 0; // For order
         int ackSequence = 0; // To see if the datagram was received correctly
 
         for (int i = 0; i < fileByteArray.length; i = i + 256) {
-            sequenceNumber += 1;
+            sequenceNumber++;
 
             // Create message
-            Message m = new Message(2,sequenceNumber,Arrays.copyOfRange(fileByteArray,i,i+255));
+            Message m;
+
+            if ((i + 255) >= fileByteArray.length) { // Have we reached the end of file?
+                m = new Message(2,sequenceNumber,256,Arrays.copyOfRange(fileByteArray,i,i+255));
+            } else {
+                m = new Message(2,sequenceNumber,fileByteArray.length - i, Arrays.copyOfRange(fileByteArray,i,i+255));
+            }
 
             sendData = m.getBytes();
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, port); // The data to be sent

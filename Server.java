@@ -8,7 +8,7 @@ import java.util.List;
 public class Server implements Runnable{
     List<Thread> ths = new ArrayList<>();
 
-    private static void sendAck(int foundLast, DatagramSocket socket, InetAddress address, int port) throws IOException {
+    public static void sendAck(int foundLast, DatagramSocket socket, InetAddress address, int port) throws IOException {
         // send acknowledgement
         byte[] ack = new byte[4];
         Message ackMessage = new Message(3,foundLast);

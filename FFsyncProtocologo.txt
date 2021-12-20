@@ -23,10 +23,10 @@ FT-Rapid Protocol
 
     3.2) Data (DATA)
         
-           1byte    3 bytes    nbytes
-        +--------+-----------+--------+
-        | opcode |  Packet # |  Data  |
-        +--------+-----------+--------+    
+           1byte    3 bytes    1byte    nbytes
+        +--------+-----------+--------+--------+
+        | opcode |  Packet # |  size  |  Data  |
+        +--------+-----------+--------+--------+    
 
         Se a data a ser transferida tiver 256 bytes significa que ainda há mais informação a transferir.
          Quando tiver entre 0 e 255 bytes significa que a transferência chegou ao fim.
