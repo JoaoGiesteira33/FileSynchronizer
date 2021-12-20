@@ -14,7 +14,22 @@ public class Message{
         this.data = data;
     }
 
-    //Data Constructorbyte packetNumberArr[]
+    //WriteFileRequest Constructor
+    public Message(int type, int filePathSize, byte[] filePath){
+        this.type = Integer.valueOf(type).byteValue();
+        byte[] filePathSizeArr = new byte[]{Integer.valueOf(filePathSize).byteValue()};
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try{
+            outputStream.write( filePathSizeArr );
+            outputStream.write( filePath );
+        }
+        catch(IOException e){
+            LoggerUtil.getLogger().severe(e.getMessage());
+        }
+        this.data = outputStream.toByteArray();
+    }
+
+    //Data Constructor
     public Message(int type, int packetNumber,int file_size, byte[] fileData){
         this.type = Integer.valueOf(type).byteValue();
         byte packetNumberArr[] = new byte[3];

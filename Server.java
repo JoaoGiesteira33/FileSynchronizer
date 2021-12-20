@@ -38,15 +38,17 @@ public class Server implements Runnable{
                 }
 
                 //Servidor verificar se tem o ficheiro em memoria
+                Byte file_sizeB = received_m.getData()[0];
+                int file_size = file_sizeB.intValue();
+                //UNICA COISA Q PODE ESTAR A FALHAR, TANTO QUANTO SABEMOS
                 String file_path = new String(received_m.getData());
-                //PROVAVELMENTE VAMOS TER QUE GUARDAR TAMANHO NO PACOTE PARA SABER AQUI MAS POR AGORA FICA ASSIM
-                System.out.println("FILE PATH: " + file_path); //TEMPORARIO, APENAS PARA TESTE ^^^^^^^
+                System.out.println("FILE PATH: " + file_path);
                 LoggerUtil.getLogger().info("Write Request for new file: " + file_path);
 
                 if(!Main.hasFile(file_path)){ //Computador do Servidor não tem o ficheiro recebido
                     LoggerUtil.getLogger().info("Request Accepted for file: " + file_path);
-                    //AQUI TEMOS DE MUDAR O NOME DO FICHEIRO ACHO EU
-                    File f = new File(file_path);
+                    
+                    File f = new File(Main.changeFilePath(file_path));
                     try{                     
                         f.createNewFile();
                         Main.addFile(f);

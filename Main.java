@@ -1,5 +1,4 @@
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +11,11 @@ public class Main {
         return Main.folderToSync;
     }
 
+    public static String changeFilePath(String filePath){
+        String aux = filePath.substring(filePath.indexOf("/")+1);
+        return (Main.getFolder() + "/" + aux);
+    }
+
     public static void addFile(File f){
         Main.filesToSync.add(f);
     }
@@ -22,13 +26,10 @@ public class Main {
 
     //Ignorar nome da Pasta, pois pode mudar de cliente para cliente
     public static boolean hasFile(String filePath){
-        //Cortar nome da Pasta
-        String aux = filePath.substring(filePath.indexOf("/")+1);
-        //Adicionar pasta atual
-        String aux2 = Main.getFolder() + "/" + aux;
+        String aux = changeFilePath(filePath);
         //Verificar se existe
         for(File f : Main.filesToSync){
-            if(f.getPath().equals(aux2))
+            if(f.getPath().equals(aux))
                 return true;
         }
         return false;
