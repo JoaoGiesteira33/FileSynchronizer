@@ -49,12 +49,13 @@ public class Client implements Runnable {
                 flag = false;
             }
             if(flag){
-                m = new Message(2, sequenceNumber, fileByteArray.length - i, Arrays.copyOfRange(fileByteArray,i,i+255))
+                m = new Message(2, sequenceNumber, fileByteArray.length - i, Arrays.copyOfRange(fileByteArray,i,i+255));
             }
             else{
+                System.out.println("NOT END OF FILE YET!!!!!!!!!!!!!!!!!");
                 m = new Message(2,sequenceNumber,256, Arrays.copyOfRange(fileByteArray,i,i+255));
             }
-            
+
             System.out.println("SIZE: " + fileByteArray.length);
             System.out.println("CLIENT MESSAGE");
             m.printData();

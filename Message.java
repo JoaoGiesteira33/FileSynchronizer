@@ -37,6 +37,8 @@ public class Message{
         packetNumberArr[1] = (byte) ((packetNumber& 0x0000FF00) >> 8);
         packetNumberArr[2] = (byte) ((packetNumber& 0x000000FF) >> 0);
         byte[] file_size_arr = new byte[]{Integer.valueOf(file_size).byteValue()};
+        Byte b = file_size_arr[0];
+        System.out.println("SIZE IN CREATION: " + b.intValue());
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try{
             outputStream.write( packetNumberArr );
