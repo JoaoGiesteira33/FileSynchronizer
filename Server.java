@@ -40,8 +40,10 @@ public class Server implements Runnable{
                 //Servidor verificar se tem o ficheiro em memoria
                 Byte file_sizeB = received_m.getData()[0];
                 int file_size = file_sizeB.intValue();
+                System.out.println("GOING TO PRINT DATA-----------------------");
+                received_m.printData();
                 //UNICA COISA Q PODE ESTAR A FALHAR, TANTO QUANTO SABEMOS
-                String file_path =  (new String(received_m.getData())).substring(1,file_size);
+                String file_path =  (new String(received_m.getData()));
                 System.out.println("FILE PATH SIZE: " + file_path.length());                
                 System.out.println("FILE PATH: " + file_path);
 

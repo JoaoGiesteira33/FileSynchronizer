@@ -95,4 +95,8 @@ public class Message{
         Byte b = this.data[4];
         return(b.intValue() < 256 && this.getType() == 2);
     }
+
+    public void printData(){
+        System.out.println(Arrays.toString(this.data));
+    }
 }
