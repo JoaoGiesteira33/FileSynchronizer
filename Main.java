@@ -1,7 +1,9 @@
 import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
     public static String folderToSync;
@@ -49,7 +51,7 @@ public class Main {
                 resultList.addAll(files_to_sync(file.getPath()));
             }
         }
-        return resultList;
+        return resultList.stream().filter(f -> !f.isDirectory()).collect(Collectors.toList());
     }
 
     public static void main(String[] args) {
@@ -68,7 +70,6 @@ public class Main {
 
         Main.filesToSync = files_to_sync(Main.getFolder());
 
-        
         Server myServer = new Server();
         Client myClient = new Client(ips);
         
@@ -85,5 +86,6 @@ public class Main {
         catch(InterruptedException e){
             LoggerUtil.getLogger().severe(e.getMessage());
         } 
+        
     }
 }

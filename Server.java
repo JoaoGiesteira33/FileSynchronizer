@@ -47,6 +47,14 @@ public class Server implements Runnable{
                     
                     File f = new File(Main.changeFilePath(file_path));
                     try{                     
+                        try{
+
+                            f.getParentFile().mkdirs();
+                        }
+                        catch(NullPointerException e)
+                        {
+                            System.out.println("NAO E PRECISO!!");
+                        }
                         f.createNewFile();
                         Main.addFile(f);
                     }
