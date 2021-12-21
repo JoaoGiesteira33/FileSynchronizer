@@ -32,28 +32,28 @@ public class Client implements Runnable {
     }
 
     private void sendFile(DatagramSocket socket, byte[] fileByteArray, InetAddress address, int port) throws IOException {
-        byte[] sendData = new byte[261]; //Tamanho máximo de um pacote
+        byte[] sendData = new byte[260]; //Tamanho máximo de um pacote
         LoggerUtil.getLogger().info("Sending file");
         int sequenceNumber = 0; // Para ordenar envio de pacotes
         int ackSequence = 0; // Verificar se o pacote foi enviado corretamente
         boolean flag; //Ultimo pacote
 
-        for (int i = 0; i < fileByteArray.length; i += 256) {
+        for (int i = 0; i < fileByteArray.length; i += 255) {
             sequenceNumber++;
 
             // Cria uma mensagem, que muda se o ficheiro já chegou ao fim
             Message m;
-            if ((i + 255) >= fileByteArray.length) { // Chegamos ao fim do ficheiro
+            if ((i + 254) >= fileByteArray.length) { // Chegamos ao fim do ficheiro
                 flag = true;
             } else { //Ainda não chegamos ao fim 
                 flag = false;
             }
             if(flag){
-                m = new Message(2, sequenceNumber, fileByteArray.length - i, Arrays.copyOfRange(fileByteArray,i,i+255));
+                m = new Message(2, sequenceNumber, fileByteArray.length - i, Arrays.copyOfRange(fileByteArray,i,i+254));
             }
             else{
                 System.out.println("NOT END OF FILE YET!!!!!!!!!!!!!!!!!");
-                m = new Message(2,sequenceNumber,256, Arrays.copyOfRange(fileByteArray,i,i+255));
+                m = new Message(2,sequenceNumber,255, Arrays.copyOfRange(fileByteArray,i,i+254));
             }
             System.out.println("CLIENT is going to send this MESSAGE");
             m.printData();

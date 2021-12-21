@@ -35,7 +35,7 @@ public class FileDataHandler implements Runnable{
             int foundLast = 0;
             
             while (true) {
-                byte[] message = new byte[261]; // Mensagem a receber, tamanho maximo
+                byte[] message = new byte[260]; // Mensagem a receber, tamanho maximo
             
                 // Receber pacote
                 DatagramPacket receivedPacket = new DatagramPacket(message, message.length);
