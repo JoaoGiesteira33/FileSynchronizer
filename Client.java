@@ -52,7 +52,6 @@ public class Client implements Runnable {
                 m = new Message(2, sequenceNumber, fileByteArray.length - i, Arrays.copyOfRange(fileByteArray,i,i+254));
             }
             else{
-                System.out.println("NOT END OF FILE YET!!!!!!!!!!!!!!!!!");
                 m = new Message(2,sequenceNumber,255, Arrays.copyOfRange(fileByteArray,i,i+254));
             }
 

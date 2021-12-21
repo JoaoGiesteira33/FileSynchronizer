@@ -52,13 +52,12 @@ public class FileDataHandler implements Runnable{
                 message = receivedPacket.getData(); // Data to be written to the file
                 Message received_m = new Message(message);
 
-                System.out.println("SERVER is receiving this message MESSAGE");
-                received_m.printData();
-
                 // Obter número de sequência para verificar
                 sequenceNumber = received_m.getPacketNumber();
                 // Verificar se chegamos ao fim do ficheiro
                 flag = received_m.isLastPacket();
+                if(flag)
+                    System.out.println("OH SHIT!!!");
 
                 // Está correto se numero de sequncia for mais 1 que o visto anteriormente
                 if (sequenceNumber == (foundLast + 1)) {
