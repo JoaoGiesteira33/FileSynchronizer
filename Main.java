@@ -84,6 +84,6 @@ public class Main {
         }
         catch(InterruptedException e){
             LoggerUtil.getLogger().severe(e.getMessage());
-        }   
+        } 
     }
 }
