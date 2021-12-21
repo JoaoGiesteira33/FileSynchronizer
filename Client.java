@@ -94,7 +94,7 @@ public class Client implements Runnable {
                 
                 //Criação de uma mensagem com o nome do ficheiro (TIPO 1)
                 String file_path = f.getPath();
-                System.out.println("FIle Path before being sent: " + file_path);
+                //System.out.println("File Path before being sent: " + file_path);
                 Message send_m = new Message(1,f.getPath().length(),file_path.getBytes());
                 sendData = send_m.getBytes();
 

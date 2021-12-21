@@ -43,7 +43,7 @@ public class Server implements Runnable{
                 System.out.println("GOING TO PRINT DATA-----------------------");
                 received_m.printData();
                 //UNICA COISA Q PODE ESTAR A FALHAR, TANTO QUANTO SABEMOS
-                String file_path =  (new String(received_m.getData()));
+                String file_path =  new String(Arrays.copyOfRange(received_m.getData(),1,file_size));
                 System.out.println("FILE PATH SIZE: " + file_path.length());                
                 System.out.println("FILE PATH: " + file_path);
 
