@@ -41,7 +41,7 @@ public class Server implements Runnable{
                 Byte file_sizeB = received_m.getData()[0];
                 int file_size = file_sizeB.intValue();
                 //UNICA COISA Q PODE ESTAR A FALHAR, TANTO QUANTO SABEMOS
-                String file_path =  (new String(received_m.getData())).substring(0,file_size-1);
+                String file_path =  (new String(received_m.getData())).substring(1,file_size);
                 System.out.println("FILE PATH SIZE: " + file_path.length());                
                 System.out.println("FILE PATH: " + file_path);
 
