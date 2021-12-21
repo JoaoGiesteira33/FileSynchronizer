@@ -60,7 +60,7 @@ public class FileDataHandler implements Runnable{
 
                     // Escrever dados para o ficheiro
                     outToFile.write(fileByteArray);
-                    LoggerUtil.getLogger().info("S || Recebemos sequence numbe: " + foundLast);
+                    LoggerUtil.getLogger().info("S || Recebemos sequence number: " + foundLast);
 
                     // Enviar ACK
                     Server.sendAck(foundLast, socket, ip, port);

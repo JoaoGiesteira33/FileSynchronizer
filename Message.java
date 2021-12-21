@@ -84,7 +84,7 @@ public class Message{
     }
 
     public int getPacketNumber(){
-        if(this.type != 2)
+        if(this.type != 2 || this.type != 3)
             return 0;
         return  ((this.data[1] & 0xFF) << 16) | 
                 ((this.data[2] & 0xFF) << 8 ) | 
