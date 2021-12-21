@@ -44,6 +44,9 @@ public class FileDataHandler implements Runnable{
                 message = receivedPacket.getData(); // Data to be written to the file
                 Message received_m = new Message(message);
 
+                System.out.println("SERVER MESSAGE");
+                received_m.printData();
+
                 // Obter número de sequência para verificar
                 sequenceNumber = received_m.getPacketNumber();
                 // Verificar se chegamos ao fim do ficheiro

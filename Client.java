@@ -47,7 +47,8 @@ public class Client implements Runnable {
             } else { //Ainda não chegamos ao fim 
                 m = new Message(2,sequenceNumber,256, Arrays.copyOfRange(fileByteArray,i,i+255));
             }
-
+            System.out.println("CLIENT MESSAGE");
+            m.printData();
             //Enviar pacote com parte do ficheiro
             sendData = m.getBytes();
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, port);
