@@ -104,8 +104,7 @@ public class Message{
     public int fileDataSize(){
         if(this.getType() != 2)
             return 0;
-        Byte b = this.data[3];
-        return b.intValue();
+        return Byte.toUnsignedInt(this.data[3]);
     }
 
     private int byteToInt(byte[] bytes, int length) {
