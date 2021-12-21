@@ -55,8 +55,8 @@ public class FileDataHandler implements Runnable{
                     foundLast = sequenceNumber;
 
                     // Data do ficheiro, apenas a partir do 5 byte é que começa
-                    //MUDAR CÓPIA DO FICHEIRO FAZENDO USO DO TAMANHO
-                    System.arraycopy(message, 5, fileByteArray, 0, 255);
+                    int fileDataSize = received_m.fileDataSize();
+                    System.arraycopy(message, 5, fileByteArray, 0, fileDataSize-1);
 
                     // Escrever dados para o ficheiro
                     outToFile.write(fileByteArray);
@@ -75,6 +75,7 @@ public class FileDataHandler implements Runnable{
                     break;
                 }
             }
+            this.socket.close();
         }catch(FileNotFoundException e){
             LoggerUtil.getLogger().severe("S || " + e.getMessage());
             //SEND ERROR PACKAGE

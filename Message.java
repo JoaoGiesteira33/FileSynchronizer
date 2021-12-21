@@ -98,6 +98,13 @@ public class Message{
         System.out.println(Arrays.toString(this.data));
     }
 
+    public int fileDataSize(){
+        if(this.getType() != 2)
+            return 0;
+        Byte b = this.data[4];
+        return b.intValue();
+    }
+
     private int byteToInt(byte[] bytes, int length) {
         int val = 0;
         if(length>4) throw new RuntimeException("Demasiado Grande para guardar num int!");

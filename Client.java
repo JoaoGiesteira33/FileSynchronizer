@@ -43,8 +43,7 @@ public class Client implements Runnable {
             // Cria uma mensagem, que muda se o ficheiro já chegou ao fim
             Message m;
             if ((i + 255) >= fileByteArray.length) { // Chegamos ao fim do ficheiro
-                //CUIDADO NESTA PASSO, MUITO POTENCIAL PARA DAR ERRO
-                m = new Message(2, sequenceNumber, fileByteArray.length - i, Arrays.copyOfRange(fileByteArray,i,i+(fileByteArray.length-i-1)));
+                m = new Message(2, sequenceNumber, fileByteArray.length - i, Arrays.copyOfRange(fileByteArray,i,i+255));
             } else { //Ainda não chegamos ao fim 
                 m = new Message(2,sequenceNumber,256, Arrays.copyOfRange(fileByteArray,i,i+255));
             }
