@@ -84,11 +84,9 @@ public class Message{
     }
 
     public int getPacketNumber(){
-        if(this.type != 2 || this.type != 3)
+        if((this.getType() != 2) && (this.getType() != 3))
             return 0;
-        return  ((this.data[0] & 0xFF) << 16) | 
-                ((this.data[1] & 0xFF) << 8 ) | 
-                ((this.data[2] & 0xFF) << 0 );
+        return  this.byteToInt(this.data, 3);
     }
 
     public boolean isLastPacket(){
@@ -98,5 +96,15 @@ public class Message{
 
     public void printData(){
         System.out.println(Arrays.toString(this.data));
+    }
+
+    private int byteToInt(byte[] bytes, int length) {
+        int val = 0;
+        if(length>4) throw new RuntimeException("Demasiado Grande para guardar num int!");
+        for (int i = 0; i < length; i++) {
+            val=val<<8;
+            val=val|(bytes[i] & 0xFF);
+        }
+        return val;
     }
 }
