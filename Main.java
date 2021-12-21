@@ -28,7 +28,6 @@ public class Main {
         Main.filesToSync = Main.files_to_sync(Main.getFolder());
     }
 
-    //Ignorar nome da Pasta, pois pode mudar de cliente para cliente
     public static boolean hasFile(String filePath){
         String aux = changeFilePath(filePath);
         //Verificar se existe
