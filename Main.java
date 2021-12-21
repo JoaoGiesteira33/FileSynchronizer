@@ -6,6 +6,7 @@ import java.util.List;
 public class Main {
     public static String folderToSync;
     public static List<File> filesToSync;
+    public static List<File> addedFiles = new ArrayList<>();
 
     public static String getFolder(){
         return Main.folderToSync;
@@ -17,7 +18,7 @@ public class Main {
     }
 
     public static void addFile(File f){
-        Main.filesToSync.add(f);
+        Main.addedFiles.add(f);
     }
 
     public static void updateFiles(){
