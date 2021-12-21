@@ -68,7 +68,6 @@ public class Main {
 
         Main.filesToSync = files_to_sync(Main.getFolder());
 
-        
         Server myServer = new Server();
         Client myClient = new Client(ips);
         

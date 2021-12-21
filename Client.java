@@ -38,7 +38,7 @@ public class Client implements Runnable {
         int ackSequence = 0; // Verificar se o pacote foi enviado corretamente
         boolean flag; //Ultimo pacote
 
-        for (int i = 0; i < fileByteArray.length; i = i + 256) {
+        for (int i = 0; i < fileByteArray.length; i += 256) {
             sequenceNumber++;
 
             // Cria uma mensagem, que muda se o ficheiro já chegou ao fim
@@ -55,9 +55,7 @@ public class Client implements Runnable {
                 System.out.println("NOT END OF FILE YET!!!!!!!!!!!!!!!!!");
                 m = new Message(2,sequenceNumber,256, Arrays.copyOfRange(fileByteArray,i,i+255));
             }
-
-            System.out.println("SIZE: " + fileByteArray.length);
-            System.out.println("CLIENT MESSAGE");
+            System.out.println("CLIENT is going to send this MESSAGE");
             m.printData();
             //Enviar pacote com parte do ficheiro
             sendData = m.getBytes();

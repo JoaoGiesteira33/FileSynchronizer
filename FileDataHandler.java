@@ -36,15 +36,14 @@ public class FileDataHandler implements Runnable{
             
             while (true) {
                 byte[] message = new byte[261]; // Mensagem a receber, tamanho maximo
-                
-
+            
                 // Receber pacote
                 DatagramPacket receivedPacket = new DatagramPacket(message, message.length);
                 socket.receive(receivedPacket);
                 message = receivedPacket.getData(); // Data to be written to the file
                 Message received_m = new Message(message);
 
-                System.out.println("SERVER MESSAGE");
+                System.out.println("SERVER is receiving this message MESSAGE");
                 received_m.printData();
 
                 // Obter número de sequência para verificar
