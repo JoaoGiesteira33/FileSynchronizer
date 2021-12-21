@@ -56,6 +56,7 @@ public class FileDataHandler implements Runnable{
 
                     // Data do ficheiro, apenas a partir do 5 byte é que começa
                     int fileDataSize = received_m.fileDataSize();
+                    System.out.println("File size: " + fileDataSize);
                     byte[] fileByteArray = new byte[fileDataSize];
                     System.arraycopy(message, 5, fileByteArray, 0, fileDataSize);
                     System.out.println(sequenceNumber + " | FILE DATA: " + new String(fileByteArray));
