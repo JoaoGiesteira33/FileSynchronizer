@@ -53,6 +53,13 @@ FT-Rapid Protocol
         2 - Erro a Criar Ficheiro
         ...
 
+    3.5) WantFile (WF)
+        
+           1byte
+        +---------+
+        | opcdode |
+        +---------+
+
 4) Normal Termination
 
     No final da transferência, quando o pacote de data tem menos de 256 bytes,

@@ -27,8 +27,8 @@ public class FileDataHandler implements Runnable{
 
     public void run(){
         try{
-            //Antes de tudo enviar ACK para cliente do outro lado saber que queremos o ficheiro e começar a transferencia
-            Server.sendAck(0, socket, this.ip, this.port);
+            //Confirmamos ao Cliente que queremos o ficheiro
+            Server.sendWantFile(socket, this.ip, this.port);
             FileOutputStream outToFile = new FileOutputStream(this.f); 
             boolean flag; // Fim do ficheiro
             int sequenceNumber = 0; 

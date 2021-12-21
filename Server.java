@@ -17,6 +17,13 @@ public class Server implements Runnable{
         LoggerUtil.getLogger().info("S || Enviar ACK a " + address + ", sequence number: " + foundLast);
     }
 
+    public static void sendWantFile(DatagramSocket socket, InetAddress adress, int port) throws IOException{
+        byte[] wantFile = new byte[]{Integer.valueOf(5).byteValue()};
+        DatagramPacket wantFilePacket = new DatagramPacket(wantFile, wantFile.length, adress, port);
+        socket.send(wantFilePacket);
+        LoggerUtil.getLogger().info("S || Enviamos confirmacao de que queremo ficheiro a " + adress + " pela porta " + port);
+    }
+
     public void run(){
          try {
              //Abrimos servidor na porta 8888

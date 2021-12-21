@@ -136,7 +136,7 @@ public class Client implements Runnable {
                     }
 
                     //Verificar tipo de resposta do servidor
-                    if(answerMessage.getType() == 3){ //Servidor deseja ficheiro
+                    if(answerMessage.getType() == 5){ //Servidor deseja ficheiro
                         LoggerUtil.getLogger().info("C || Resposta positiva, iniciar transferencia de: " + file_path);
                         byte[] fileByteArray = readFileToByteArray(f); // Array de bytes do ficheiro
                         sendFile(clientSocket, fileByteArray, answerIP, answerPort); //Envio de ficheiro
