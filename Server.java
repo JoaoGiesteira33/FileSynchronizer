@@ -42,6 +42,7 @@ public class Server implements Runnable{
                 int file_size = file_sizeB.intValue();
                 //UNICA COISA Q PODE ESTAR A FALHAR, TANTO QUANTO SABEMOS
                 String file_path = new String(received_m.getData());
+                System.out.println("FILE PATH SIZE: " + file_path.length());
                 System.out.println("FILE PATH: " + file_path);
                 LoggerUtil.getLogger().info("Write Request for new file: " + file_path);
 
