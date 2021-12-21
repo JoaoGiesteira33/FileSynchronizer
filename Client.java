@@ -53,7 +53,7 @@ public class Client implements Runnable {
             sendData = m.getBytes();
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, port);
             socket.send(sendPacket);
-            LoggerUtil.getLogger().info("Sent: Sequence number = " + sequenceNumber);
+            LoggerUtil.getLogger().info("C || Sent: Sequence number = " + sequenceNumber);
             boolean ackRec; // Recebemos um ack
 
             while (true) {
@@ -67,18 +67,18 @@ public class Client implements Runnable {
                     ackSequence = received_m.getPacketNumber(); //Número de pacote no ACK
                     ackRec = true; // Recebemos um ACK
                 } catch (SocketTimeoutException e) {
-                    System.out.println("Socket timed out waiting for ack");
+                    System.out.println("C || Socket timed out waiting for ack");
                     ackRec = false; // Não recebemos um ACK
                 }
 
                 // Recebemos o ACK correto, podemos enviar próxima parte do ficheiro
                 if ((ackSequence == sequenceNumber) && (ackRec)) {
-                    LoggerUtil.getLogger().info("Ack received: Sequence Number = " + ackSequence);
+                    LoggerUtil.getLogger().info("C || Ack received: Sequence Number = " + ackSequence);
                     break;
                 } // Pacote não foi recebido, por isso reenviamos
                 else {
                     socket.send(sendPacket);
-                    LoggerUtil.getLogger().warning("Resending: Sequence Number = " + sequenceNumber);
+                    LoggerUtil.getLogger().warning("C || Resending: Sequence Number = " + sequenceNumber);
                 }
             }
         }
@@ -94,7 +94,6 @@ public class Client implements Runnable {
                 
                 //Criação de uma mensagem com o nome do ficheiro (TIPO 1)
                 String file_path = f.getPath();
-                //System.out.println("File Path before being sent: " + file_path);
                 Message send_m = new Message(1,f.getPath().length(),file_path.getBytes());
                 sendData = send_m.getBytes();
 
@@ -103,7 +102,7 @@ public class Client implements Runnable {
                     //Envio da mensagem para todos os ips conhecidos
                     DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, i, 8888);
                     clientSocket.send(sendPacket);
-                    LoggerUtil.getLogger().info("Pacote enviado | IP: " + i + " | Port: 8888 | File:" + file_path);
+                    LoggerUtil.getLogger().info("C || Pacote enviado | IP: " + i + " | Port: 8888 | File:" + file_path);
                     boolean gotAnswer;
                     Message answerMessage = new Message(4,1); // Inicializada como Erro (ficheiro não desejado)
                     InetAddress answerIP;
@@ -119,7 +118,7 @@ public class Client implements Runnable {
                             answerMessage = new Message(answerPacket.getData()); //Criação de mensagem com data obtida
                             gotAnswer = true;
                         } catch (SocketTimeoutException e) {
-                            LoggerUtil.getLogger().info("Socket timed out waiting for answer");
+                            LoggerUtil.getLogger().info("C || Socket timed out waiting for answer");
                             gotAnswer = false; // We did not receive an ack
                         }
         
@@ -127,37 +126,37 @@ public class Client implements Runnable {
                         if (gotAnswer){
                             answerIP = answerPacket.getAddress();
                             answerPort = answerPacket.getPort();
-                            LoggerUtil.getLogger().info("Answer Received");
+                            LoggerUtil.getLogger().info("C || Answer Received");
                             break;
                         } // Pacote não foi recebido, vamos reenviar
                         else {
                             clientSocket.send(sendPacket);
-                            LoggerUtil.getLogger().warning("Resending File Request: " + f.getPath());
+                            LoggerUtil.getLogger().warning("C || Resending File Request: " + f.getPath());
                         }
                     }
 
                     //Verificar tipo de resposta do servidor
                     if(answerMessage.getType() == 3){ //Servidor deseja ficheiro
-                        LoggerUtil.getLogger().info("Iniciar transferencia do ficheiro " + file_path);
+                        LoggerUtil.getLogger().info("C || Iniciar transferencia do ficheiro " + file_path);
                         byte[] fileByteArray = readFileToByteArray(f); // Array de bytes do ficheiro
                         sendFile(clientSocket, fileByteArray, answerIP, answerPort); //Envio de ficheiro
                     }
                     else if(answerMessage.getType() == 4) //Servidor não deseja ficheiro
                     {
-                        LoggerUtil.getLogger().info("Servidor em " + i + " não deseja o ficheiro " + f.getPath());
+                        LoggerUtil.getLogger().info("C || Servidor em " + i + " não deseja o ficheiro " + f.getPath());
                     }
                     else{
-                        LoggerUtil.getLogger().warning("Mensagem não reconhecida!");
+                        LoggerUtil.getLogger().warning("C || Mensagem não reconhecida!");
                     }
                 }
             }
             clientSocket.close();
         } catch (SocketException ex) {
-            LoggerUtil.getLogger().severe(ex.getMessage());
+            LoggerUtil.getLogger().severe("C || " + ex.getMessage());
         } catch (UnknownHostException ex) {
-            LoggerUtil.getLogger().severe(ex.getMessage());
+            LoggerUtil.getLogger().severe("C || " + ex.getMessage());
         } catch (IOException ex) {
-            LoggerUtil.getLogger().severe(ex.getMessage());
+            LoggerUtil.getLogger().severe("C || " + ex.getMessage());
         }
     }
 }

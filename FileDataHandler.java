@@ -21,7 +21,7 @@ public class FileDataHandler implements Runnable{
             this.socket = new DatagramSocket();
         }
         catch(SocketException e){
-            LoggerUtil.getLogger().severe(e.getMessage());
+            LoggerUtil.getLogger().severe(" S || " + e.getMessage());
         }
     }
 
@@ -29,7 +29,7 @@ public class FileDataHandler implements Runnable{
         try{
             //Antes de tudo enviar ACK para cliente do outro lado saber que queremos o ficheiro e começar a transferencia
             Server.sendAck(0, socket, this.ip, this.port);
-            LoggerUtil.getLogger().info("Sent ACK | Receiving file");
+            LoggerUtil.getLogger().info("S || Sent ACK | Receiving file");
             FileOutputStream outToFile = new FileOutputStream(this.f); 
             boolean flag; // Fim do ficheiro
             int sequenceNumber = 0; 
@@ -61,12 +61,12 @@ public class FileDataHandler implements Runnable{
 
                     // Escrever dados para o ficheiro
                     outToFile.write(fileByteArray);
-                    LoggerUtil.getLogger().info("Received: Sequence number:" + foundLast);
+                    LoggerUtil.getLogger().info("S || Received: Sequence number:" + foundLast);
 
                     // Enviar ACK
                     Server.sendAck(foundLast, socket, ip, port);
                 } else {
-                    LoggerUtil.getLogger().warning("Expected sequence number: " + (foundLast + 1) + " but received " + sequenceNumber + ". DISCARDING");
+                    LoggerUtil.getLogger().warning("S || Expected sequence number: " + (foundLast + 1) + " but received " + sequenceNumber + ". DISCARDING");
                     // Reenviar ack
                     Server.sendAck(foundLast, socket, ip, port);
                 }
@@ -77,10 +77,10 @@ public class FileDataHandler implements Runnable{
                 }
             }
         }catch(FileNotFoundException e){
-            LoggerUtil.getLogger().severe(e.getMessage());
+            LoggerUtil.getLogger().severe("S || " + e.getMessage());
             //SEND ERROR PACKAGE
         } catch(IOException e){
-            LoggerUtil.getLogger().warning(e.getMessage());
+            LoggerUtil.getLogger().warning("S || " + e.getMessage());
         }
     }
 }

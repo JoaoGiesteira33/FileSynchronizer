@@ -14,7 +14,7 @@ public class Server implements Runnable{
         ack = ackMessage.getBytes();
         DatagramPacket acknowledgement = new DatagramPacket(ack, ack.length, address, port);
         socket.send(acknowledgement);
-        LoggerUtil.getLogger().info("Sent ack: Sequence Number = " + foundLast);
+        LoggerUtil.getLogger().info("S || Sent ack: Sequence Number = " + foundLast);
     }
 
     public void run(){
@@ -29,28 +29,23 @@ public class Server implements Runnable{
                 DatagramPacket receivePacket = new DatagramPacket(receiveData,receiveData.length);
                 serverSocket.receive(receivePacket);
                 Message received_m = new Message(receivePacket.getData());
-                LoggerUtil.getLogger().info("Pacote Recebido | IP: " + receivePacket.getAddress() + " | Port: " + receivePacket.getPort());
+                LoggerUtil.getLogger().info("S || Pacote Recebido | IP: " + receivePacket.getAddress() + " | Port: " + receivePacket.getPort());
                 
                 //Servidor confirma se mensagem é do tipo 1
                 if(received_m.getType() != 1){
-                   LoggerUtil.getLogger().warning("Mensagem nao reconhecida! Tipo: " + received_m.getType());
+                   LoggerUtil.getLogger().warning("S || Mensagem nao reconhecida! Tipo: " + received_m.getType());
                    break;
                 }
 
                 //Servidor verificar se tem o ficheiro em memoria
                 Byte file_sizeB = received_m.getData()[0];
                 int file_size = file_sizeB.intValue();
-                System.out.println("GOING TO PRINT DATA-----------------------");
-                received_m.printData();
-                //UNICA COISA Q PODE ESTAR A FALHAR, TANTO QUANTO SABEMOS
                 String file_path =  new String(Arrays.copyOfRange(received_m.getData(),1,file_size+1));
-                System.out.println("FILE PATH SIZE: " + file_path.length());                
-                System.out.println("FILE PATH: " + file_path);
 
-                LoggerUtil.getLogger().info("Write Request for new file: " + file_path);
+                LoggerUtil.getLogger().info("S || Write Request for new file: " + file_path);
 
                 if(!Main.hasFile(file_path)){ //Computador do Servidor não tem o ficheiro recebido
-                    LoggerUtil.getLogger().info("Request Accepted for file: " + file_path);
+                    LoggerUtil.getLogger().info("S || Request Accepted for file: " + file_path);
                     
                     File f = new File(Main.changeFilePath(file_path));
                     try{                     
@@ -59,7 +54,7 @@ public class Server implements Runnable{
                     }
                     catch(IOException e){
                         //Enviar pacote de erro a criar ficheiro
-                        LoggerUtil.getLogger().warning("Erro a criar ficheiro");
+                        LoggerUtil.getLogger().warning("S || Erro a criar ficheiro");
                         byte[] error = new byte[]{Integer.valueOf(4).byteValue(),Integer.valueOf(2).byteValue()};
                         DatagramPacket errorPacket = new DatagramPacket(error, error.length,receivePacket.getAddress(),receivePacket.getPort());
                         serverSocket.send(errorPacket);
@@ -73,7 +68,7 @@ public class Server implements Runnable{
                     t.start();
                 }
                 else{
-                    LoggerUtil.getLogger().info("Request Declined for file: " + file_path);
+                    LoggerUtil.getLogger().info("S || Request Declined for file: " + file_path);
                     //Enviar pacote de erro de ficheiro já existente
                     byte[] errorAlreadyExists = new byte[]{Integer.valueOf(4).byteValue(),Integer.valueOf(1).byteValue()};
                     DatagramPacket errorAlreadyExistsPacket = new DatagramPacket(errorAlreadyExists, errorAlreadyExists.length,receivePacket.getAddress(),receivePacket.getPort());
@@ -85,11 +80,11 @@ public class Server implements Runnable{
                     t.join();
                 }
                 catch(InterruptedException e){
-                    LoggerUtil.getLogger().severe(e.getMessage());
+                    LoggerUtil.getLogger().severe("S || " + e.getMessage());
                 }
             }
         } catch (Exception e) {
-            LoggerUtil.getLogger().severe(e.getMessage());
+            LoggerUtil.getLogger().severe("S || " + e.getMessage());
         }
     }
 }
