@@ -8,15 +8,6 @@ import java.util.List;
 public class Server implements Runnable{
     List<Thread> ths = new ArrayList<>();
 
-    public static void sendAck(int foundLast, DatagramSocket socket, InetAddress address, int port) throws IOException {
-        byte[] ack = new byte[4];
-        Message ackMessage = new Message(3,foundLast);
-        ack = ackMessage.getBytes();
-        DatagramPacket acknowledgement = new DatagramPacket(ack, ack.length, address, port);
-        socket.send(acknowledgement);
-        LoggerUtil.getLogger().info("S || Enviar ACK a " + address + ", sequence number: " + foundLast);
-    }
-
     public static void sendWantFile(DatagramSocket socket, InetAddress adress, int port) throws IOException{
         byte[] wantFile = new byte[]{Integer.valueOf(5).byteValue()};
         DatagramPacket wantFilePacket = new DatagramPacket(wantFile, wantFile.length, adress, port);

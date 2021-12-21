@@ -55,8 +55,7 @@ public class Client implements Runnable {
                 System.out.println("NOT END OF FILE YET!!!!!!!!!!!!!!!!!");
                 m = new Message(2,sequenceNumber,255, Arrays.copyOfRange(fileByteArray,i,i+254));
             }
-            System.out.println("CLIENT is going to send this MESSAGE");
-            m.printData();
+
             //Enviar pacote com parte do ficheiro
             sendData = m.getBytes();
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, port);
@@ -69,7 +68,7 @@ public class Client implements Runnable {
                 DatagramPacket ackpack = new DatagramPacket(ack, ack.length);
 
                 try {
-                    socket.setSoTimeout(50); // Esperar que o servidor envie um ACK
+                    socket.setSoTimeout(200); // Esperar que o servidor envie um ACK
                     socket.receive(ackpack);
                     Message received_m = new Message(ackpack.getData());
                     ackSequence = received_m.getPacketNumber(); //Número de pacote no ACK

@@ -25,6 +25,15 @@ public class FileDataHandler implements Runnable{
         }
     }
 
+    private void sendAck(int foundLast, DatagramSocket socket, InetAddress address, int port) throws IOException {
+        byte[] ack = new byte[4];
+        Message ackMessage = new Message(3,foundLast);
+        ack = ackMessage.getBytes();
+        DatagramPacket acknowledgement = new DatagramPacket(ack, ack.length, address, port);
+        socket.send(acknowledgement);
+        LoggerUtil.getLogger().info("S || Enviar ACK a " + address + ", sequence number: " + foundLast);
+    }
+
     public void run(){
         try{
             //Confirmamos ao Cliente que queremos o ficheiro
@@ -67,11 +76,11 @@ public class FileDataHandler implements Runnable{
                     LoggerUtil.getLogger().info("S || Recebemos sequence number: " + foundLast);
 
                     // Enviar ACK
-                    Server.sendAck(foundLast, socket, receivedPacket.getAddress(), receivedPacket.getPort());
+                    this.sendAck(foundLast, socket, receivedPacket.getAddress(), receivedPacket.getPort());
                 } else {
                     LoggerUtil.getLogger().warning("S || A espera de sequence number: " + (foundLast + 1) + " mas recebemos " + sequenceNumber + ". DISCARDING");
                     // Reenviar ack
-                    Server.sendAck(foundLast, socket, receivedPacket.getAddress(), receivedPacket.getPort());
+                    this.sendAck(foundLast, socket, receivedPacket.getAddress(), receivedPacket.getPort());
                 }
                 // Se for último pacote do ficheiro podemos fechar
                 if (flag) {
