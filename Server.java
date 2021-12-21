@@ -14,7 +14,7 @@ public class Server implements Runnable{
         ack = ackMessage.getBytes();
         DatagramPacket acknowledgement = new DatagramPacket(ack, ack.length, address, port);
         socket.send(acknowledgement);
-        LoggerUtil.getLogger().info("S || Sent ack: Sequence Number = " + foundLast);
+        LoggerUtil.getLogger().info("S || Enviar ACK a " + address + ", sequence number: " + foundLast);
     }
 
     public void run(){
@@ -42,10 +42,10 @@ public class Server implements Runnable{
                 int file_size = file_sizeB.intValue();
                 String file_path =  new String(Arrays.copyOfRange(received_m.getData(),1,file_size+1));
 
-                LoggerUtil.getLogger().info("S || Write Request for new file: " + file_path);
+                LoggerUtil.getLogger().info("S || Questionado se queremos o seguinte ficheiro: " + file_path);
 
                 if(!Main.hasFile(file_path)){ //Computador do Servidor não tem o ficheiro recebido
-                    LoggerUtil.getLogger().info("S || Request Accepted for file: " + file_path);
+                    LoggerUtil.getLogger().info("S || Queremos o ficheiro: " + file_path);
                     
                     File f = new File(Main.changeFilePath(file_path));
                     try{                     
@@ -68,7 +68,7 @@ public class Server implements Runnable{
                     t.start();
                 }
                 else{
-                    LoggerUtil.getLogger().info("S || Request Declined for file: " + file_path);
+                    LoggerUtil.getLogger().info("S || Nao queremos o ficheiro: " + file_path);
                     //Enviar pacote de erro de ficheiro já existente
                     byte[] errorAlreadyExists = new byte[]{Integer.valueOf(4).byteValue(),Integer.valueOf(1).byteValue()};
                     DatagramPacket errorAlreadyExistsPacket = new DatagramPacket(errorAlreadyExists, errorAlreadyExists.length,receivePacket.getAddress(),receivePacket.getPort());

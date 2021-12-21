@@ -29,7 +29,6 @@ public class FileDataHandler implements Runnable{
         try{
             //Antes de tudo enviar ACK para cliente do outro lado saber que queremos o ficheiro e começar a transferencia
             Server.sendAck(0, socket, this.ip, this.port);
-            LoggerUtil.getLogger().info("S || Sent ACK | Receiving file");
             FileOutputStream outToFile = new FileOutputStream(this.f); 
             boolean flag; // Fim do ficheiro
             int sequenceNumber = 0; 
@@ -61,12 +60,12 @@ public class FileDataHandler implements Runnable{
 
                     // Escrever dados para o ficheiro
                     outToFile.write(fileByteArray);
-                    LoggerUtil.getLogger().info("S || Received: Sequence number:" + foundLast);
+                    LoggerUtil.getLogger().info("S || Recebemos sequence numbe: " + foundLast);
 
                     // Enviar ACK
                     Server.sendAck(foundLast, socket, ip, port);
                 } else {
-                    LoggerUtil.getLogger().warning("S || Expected sequence number: " + (foundLast + 1) + " but received " + sequenceNumber + ". DISCARDING");
+                    LoggerUtil.getLogger().warning("S || A espera de sequence number: " + (foundLast + 1) + " mas recebemos " + sequenceNumber + ". DISCARDING");
                     // Reenviar ack
                     Server.sendAck(foundLast, socket, ip, port);
                 }

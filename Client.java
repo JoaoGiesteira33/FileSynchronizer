@@ -118,7 +118,7 @@ public class Client implements Runnable {
                             answerMessage = new Message(answerPacket.getData()); //Criação de mensagem com data obtida
                             gotAnswer = true;
                         } catch (SocketTimeoutException e) {
-                            LoggerUtil.getLogger().info("C || Socket timed out waiting for answer");
+                            LoggerUtil.getLogger().info("C || Socket timed out a espera da resposta");
                             gotAnswer = false; // We did not receive an ack
                         }
         
@@ -126,18 +126,18 @@ public class Client implements Runnable {
                         if (gotAnswer){
                             answerIP = answerPacket.getAddress();
                             answerPort = answerPacket.getPort();
-                            LoggerUtil.getLogger().info("C || Answer Received");
+                            LoggerUtil.getLogger().info("C || Resposta recebida, verificando...");
                             break;
                         } // Pacote não foi recebido, vamos reenviar
                         else {
                             clientSocket.send(sendPacket);
-                            LoggerUtil.getLogger().warning("C || Resending File Request: " + f.getPath());
+                            LoggerUtil.getLogger().warning("C || Pacote nao recebido, reenviando: " + f.getPath());
                         }
                     }
 
                     //Verificar tipo de resposta do servidor
                     if(answerMessage.getType() == 3){ //Servidor deseja ficheiro
-                        LoggerUtil.getLogger().info("C || Iniciar transferencia do ficheiro " + file_path);
+                        LoggerUtil.getLogger().info("C || Resposta positiva, iniciar transferencia de: " + file_path);
                         byte[] fileByteArray = readFileToByteArray(f); // Array de bytes do ficheiro
                         sendFile(clientSocket, fileByteArray, answerIP, answerPort); //Envio de ficheiro
                     }
