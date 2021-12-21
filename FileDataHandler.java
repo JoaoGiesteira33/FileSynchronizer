@@ -64,20 +64,19 @@ public class FileDataHandler implements Runnable{
                     LoggerUtil.getLogger().info("S || Recebemos sequence number: " + foundLast);
 
                     // Enviar ACK
-                    Server.sendAck(foundLast, socket, ip, port);
+                    Server.sendAck(foundLast, socket, receivedPacket.getAddress(), receivedPacket.getPort());
                 } else {
                     LoggerUtil.getLogger().warning("S || A espera de sequence number: " + (foundLast + 1) + " mas recebemos " + sequenceNumber + ". DISCARDING");
                     // Reenviar ack
-                    Server.sendAck(foundLast, socket, ip, port);
+                    Server.sendAck(foundLast, socket, receivedPacket.getAddress(), receivedPacket.getPort());
                 }
                 // Se for último pacote do ficheiro podemos fechar
                 if (flag) {
                     outToFile.close();
+                    this.socket.close();
                     break;
                 }
             }
-            this.socket.close();
-            outToFile.close();
         }catch(FileNotFoundException e){
             LoggerUtil.getLogger().severe("S || " + e.getMessage());
             //SEND ERROR PACKAGE

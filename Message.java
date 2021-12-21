@@ -90,7 +90,7 @@ public class Message{
     }
 
     public boolean isLastPacket(){
-        Byte b = this.data[4];
+        Byte b = this.data[3];
         return(b.intValue() < 256 && this.getType() == 2);
     }
 
@@ -101,7 +101,7 @@ public class Message{
     public int fileDataSize(){
         if(this.getType() != 2)
             return 0;
-        Byte b = this.data[4];
+        Byte b = this.data[3];
         return b.intValue();
     }
 
