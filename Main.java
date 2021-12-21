@@ -29,8 +29,6 @@ public class Main {
         String aux = changeFilePath(filePath);
         //Verificar se existe
         for(File f : Main.filesToSync){
-            System.out.println("F PATH: " + f.getPath());
-            System.out.println("AUX PATH: " + aux);
             if(f.getPath().equals(aux))
                 return true;
         }
