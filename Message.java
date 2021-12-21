@@ -86,9 +86,9 @@ public class Message{
     public int getPacketNumber(){
         if(this.type != 2 || this.type != 3)
             return 0;
-        return  ((this.data[1] & 0xFF) << 16) | 
-                ((this.data[2] & 0xFF) << 8 ) | 
-                ((this.data[3] & 0xFF) << 0 );
+        return  ((this.data[0] & 0xFF) << 16) | 
+                ((this.data[1] & 0xFF) << 8 ) | 
+                ((this.data[2] & 0xFF) << 0 );
     }
 
     public boolean isLastPacket(){
