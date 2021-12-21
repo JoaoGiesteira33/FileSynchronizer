@@ -11,6 +11,8 @@ public class Server implements Runnable{
     public static void sendAck(int foundLast, DatagramSocket socket, InetAddress address, int port) throws IOException {
         byte[] ack = new byte[4];
         Message ackMessage = new Message(3,foundLast);
+        System.out.println("ACK MESSAGE DATA----");
+        ackMessage.printData();
         ack = ackMessage.getBytes();
         DatagramPacket acknowledgement = new DatagramPacket(ack, ack.length, address, port);
         socket.send(acknowledgement);
