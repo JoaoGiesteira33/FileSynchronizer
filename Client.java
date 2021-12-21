@@ -36,6 +36,7 @@ public class Client implements Runnable {
         LoggerUtil.getLogger().info("Sending file");
         int sequenceNumber = 0; // Para ordenar envio de pacotes
         int ackSequence = 0; // Verificar se o pacote foi enviado corretamente
+        boolean flag; //Ultimo pacote
 
         for (int i = 0; i < fileByteArray.length; i = i + 256) {
             sequenceNumber++;
@@ -43,10 +44,18 @@ public class Client implements Runnable {
             // Cria uma mensagem, que muda se o ficheiro já chegou ao fim
             Message m;
             if ((i + 255) >= fileByteArray.length) { // Chegamos ao fim do ficheiro
-                m = new Message(2, sequenceNumber, fileByteArray.length - i, Arrays.copyOfRange(fileByteArray,i,i+255));
+                flag = true;
             } else { //Ainda não chegamos ao fim 
+                flag = false;
+            }
+            if(flag){
+                m = new Message(2, sequenceNumber, fileByteArray.length - i, Arrays.copyOfRange(fileByteArray,i,i+255))
+            }
+            else{
                 m = new Message(2,sequenceNumber,256, Arrays.copyOfRange(fileByteArray,i,i+255));
             }
+            
+            System.out.println("SIZE: " + fileByteArray.length);
             System.out.println("CLIENT MESSAGE");
             m.printData();
             //Enviar pacote com parte do ficheiro
