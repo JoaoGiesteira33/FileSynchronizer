@@ -24,6 +24,7 @@ public class Main {
     }
 
     public static void updateFiles(){
+        Main.addedFiles = new ArrayList<>();
         Main.filesToSync = Main.files_to_sync(Main.getFolder());
     }
 
@@ -32,6 +33,10 @@ public class Main {
         String aux = changeFilePath(filePath);
         //Verificar se existe
         for(File f : Main.filesToSync){
+            if(f.getPath().equals(aux))
+                return true;
+        }
+        for(File f : Main.addedFiles){
             if(f.getPath().equals(aux))
                 return true;
         }

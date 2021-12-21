@@ -91,6 +91,7 @@ public class Client implements Runnable {
     }
 
     public void run() {
+        while(true){
         try {
             DatagramSocket clientSocket = new DatagramSocket();
             
@@ -164,5 +165,7 @@ public class Client implements Runnable {
         } catch (IOException ex) {
             LoggerUtil.getLogger().severe("C || " + ex.getMessage());
         }
+        Main.updateFiles();
     }
+}
 }
