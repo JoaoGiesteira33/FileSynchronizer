@@ -36,7 +36,7 @@ public class FileDataHandler implements Runnable{
             
             while (true) {
                 byte[] message = new byte[261]; // Mensagem a receber, tamanho maximo
-                byte[] fileByteArray = new byte[256]; // Data do ficheiro, tamanho maximo
+                
 
                 // Receber pacote
                 DatagramPacket receivedPacket = new DatagramPacket(message, message.length);
@@ -56,6 +56,7 @@ public class FileDataHandler implements Runnable{
 
                     // Data do ficheiro, apenas a partir do 5 byte é que começa
                     int fileDataSize = received_m.fileDataSize();
+                    byte[] fileByteArray = new byte[fileDataSize];
                     System.arraycopy(message, 5, fileByteArray, 0, fileDataSize-1);
 
                     // Escrever dados para o ficheiro
@@ -76,6 +77,7 @@ public class FileDataHandler implements Runnable{
                 }
             }
             this.socket.close();
+            outToFile.close();
         }catch(FileNotFoundException e){
             LoggerUtil.getLogger().severe("S || " + e.getMessage());
             //SEND ERROR PACKAGE
