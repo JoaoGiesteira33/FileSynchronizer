@@ -58,7 +58,7 @@ public class FileDataHandler implements Runnable{
                     int fileDataSize = received_m.fileDataSize();
                     byte[] fileByteArray = new byte[fileDataSize];
                     System.arraycopy(message, 5, fileByteArray, 0, fileDataSize);
-
+                    System.out.println(sequenceNumber + " | FILE DATA: " + new String(fileByteArray));
                     // Escrever dados para o ficheiro
                     outToFile.write(fileByteArray);
                     LoggerUtil.getLogger().info("S || Recebemos sequence number: " + foundLast);
