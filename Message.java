@@ -91,8 +91,7 @@ public class Message{
     }
 
     public boolean isLastPacket(){
-        Byte b = this.data[3];
-        return(b.intValue() < 256 && this.getType() == 2);
+        return(Byte.toUnsignedInt(this.data[3]) < 255 && this.getType() == 2);
     }
 
     public void printData(){
