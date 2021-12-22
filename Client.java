@@ -6,11 +6,9 @@ import java.util.List;
 
 public class Client implements Runnable {
     private List<InetAddress> ips;
-    private List<Thread> ths;
 
     public Client(List<String> ipsString) {
         this.ips = new ArrayList<>();
-        this.ths = new ArrayList<>();
         try{
             for(String ip : ipsString){
                 this.ips.add(InetAddress.getByName(ip));
@@ -20,6 +18,7 @@ public class Client implements Runnable {
         }
     }
 
+    //Transforma ficheiro em array de bytes para fazer a transferência
     private static byte[] readFileToByteArray(File file) {
         FileInputStream fis = null;
         byte[] bArray = new byte[(int) file.length()];
@@ -33,14 +32,85 @@ public class Client implements Runnable {
         return bArray;
     }
 
+    public void sendFile(DatagramSocket socket, byte[] fileByteArray, InetAddress address, int port){
+        try{
+            System.out.println("Starting new transfer");
+            //Informação para tempo de transferência e débito final
+            long startTime = System.nanoTime();
+            long totalUpload = fileByteArray.length * 8; //bits
+
+        byte[] sendData = new byte[260]; //Tamanho máximo de um pacote
+        LoggerUtil.getLogger().info("Sending file");
+        int sequenceNumber = 0; // Para ordenar envio de pacotes
+        int ackSequence = 0; // Verificar se o pacote foi enviado corretamente
+        boolean flag; //Ultimo pacote
+
+        for (int i = 0; i < fileByteArray.length; i += 255) {
+            sequenceNumber++;
+
+            // Cria uma mensagem, que muda se o ficheiro já chegou ao fim
+            Message m;
+            if ((i + 255) >= fileByteArray.length) { // Chegamos ao fim do ficheiro
+                flag = true;
+            } else { //Ainda não chegamos ao fim 
+                flag = false;
+            }
+            if(flag){
+                m = new Message(2, sequenceNumber, fileByteArray.length - i, Arrays.copyOfRange(fileByteArray,i,i+254));
+            }
+            else{
+                m = new Message(2,sequenceNumber,255, Arrays.copyOfRange(fileByteArray,i,i+254));
+            }
+
+            //Enviar pacote com parte do ficheiro
+            sendData = m.getBytes();
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, port);
+            socket.send(sendPacket);
+            LoggerUtil.getLogger().info("C || Sent: Sequence number = " + sequenceNumber);
+            boolean ackRec; // Recebemos um ack
+
+            while (true) {
+                byte[] ack = new byte[4]; // Receber ACK (TIPO 3)
+                DatagramPacket ackpack = new DatagramPacket(ack, ack.length);
+
+                try {
+                    socket.setSoTimeout(50); // Esperar que o servidor envie um ACK
+                    socket.receive(ackpack);
+                    Message received_m = new Message(ackpack.getData());
+                    ackSequence = received_m.getPacketNumber(); //Número de pacote no ACK
+                    ackRec = true; // Recebemos um ACK
+                } catch (SocketTimeoutException e) {
+                    System.out.println("C || Socket timed out waiting for ack");
+                    ackRec = false; // Não recebemos um ACK
+                }
+
+                // Recebemos o ACK correto, podemos enviar próxima parte do ficheiro
+                if ((ackSequence == sequenceNumber) && (ackRec)) {
+                    LoggerUtil.getLogger().info("C || Ack received: Sequence Number = " + ackSequence);
+                    break;
+                } // Pacote não foi recebido, por isso reenviamos
+                else {
+                    socket.send(sendPacket);
+                    LoggerUtil.getLogger().warning("C || Resending: Sequence Number = " + sequenceNumber);
+                }
+            }
+        }
+        long transferTime = ((System.nanoTime() - startTime) / 1000000000);
+            float bitsPerSec = (float)totalUpload / transferTime;
+            System.out.println("C || F | bps: " + bitsPerSec);
+            System.out.println("C || F | Time of transfer: " + transferTime + " secs");
+    }catch(Exception e){
+        LoggerUtil.getLogger().severe("C || " + e.getMessage());
+    }
+    }
+
     public void run() {
         try{
             DatagramSocket clientSocket = new DatagramSocket();
             byte[] sendData = new byte[128]; // Data a enviar
             
             while(true){
-                this.ths = new ArrayList<>();
-            for(File f : Main.filesToSync){
+                for(File f : Main.filesToSync){
                 
                 //Criação de uma mensagem com o nome do ficheiro (TIPO 1)
                 String file_path = f.getPath();
@@ -90,10 +160,7 @@ public class Client implements Runnable {
                         LoggerUtil.getLogger().info("C || Resposta positiva, iniciar transferencia de: " + file_path);
                         byte[] fileByteArray = readFileToByteArray(f); // Array de bytes do ficheiro
 
-                        FileDataSender fds = new FileDataSender(fileByteArray, answerIP, answerPort);
-                        Thread t = new Thread(fds);
-                        this.ths.add(t);
-                        t.start();
+                        sendFile(clientSocket, fileByteArray, answerIP, answerPort);
                     }
                     else if(answerMessage.getType() == 4) //Servidor não deseja ficheiro
                     {
@@ -101,18 +168,11 @@ public class Client implements Runnable {
                     }
                     else{
                         LoggerUtil.getLogger().warning("C || Mensagem não reconhecida!");
+                        break;
                     }
                 }
             }
             Main.updateFiles();
-        
-        for(Thread t : this.ths){
-            try {
-                t.join();
-            } catch (InterruptedException e) {
-                LoggerUtil.getLogger().severe("C || " + e.getMessage());
-            }
-        }
     }
         } catch (SocketException ex) {
             LoggerUtil.getLogger().severe("C || " + ex.getMessage());
