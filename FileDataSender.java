@@ -25,6 +25,11 @@ public class FileDataSender implements Runnable{
 
     public void run(){
         try{
+            System.out.println("Starting new Thread");
+            //Informação para tempo de transferência e débito final
+            long startTime = System.nanoTime();
+            long totalUpload = fileByteArray.length * 8; //bits
+
         byte[] sendData = new byte[260]; //Tamanho máximo de um pacote
         LoggerUtil.getLogger().info("Sending file");
         int sequenceNumber = 0; // Para ordenar envio de pacotes
@@ -81,6 +86,10 @@ public class FileDataSender implements Runnable{
                 }
             }
         }
+        long transferTime = ((System.nanoTime() - startTime) / 1000000000);
+            float bitsPerSec = (float)totalUpload / transferTime;
+            System.out.println("C || F | bps: " + bitsPerSec);
+            System.out.println("C || F | Time of transfer: " + transferTime + " secs");
     }catch(Exception e){
         LoggerUtil.getLogger().severe("C || " + e.getMessage());
     }
