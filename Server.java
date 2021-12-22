@@ -55,7 +55,7 @@ public class Server implements Runnable{
                 if(!Main.hasFile(file_path)){ //Computador do Servidor não tem o ficheiro recebido
                     LoggerUtil.getLogger().info("S || Queremos o ficheiro: " + file_path);
                     
-                    File f = new File(Main.changeFilePath(file_path));/*
+                    File f = new File(Main.changeFilePath(file_path));
                     try{                     
                         try{
                             f.getParentFile().mkdirs(); //Caso tenha subpastas até chegar ao ficheiro
@@ -63,7 +63,7 @@ public class Server implements Runnable{
                         catch(NullPointerException e)
                         {
                         }
-                        //f.createNewFile(); //Criamos o ficheiro em memória
+                        f.createNewFile(); //Criamos o ficheiro em memória
                         Main.addFile(f);
                     }
                     catch(IOException e){
@@ -74,15 +74,6 @@ public class Server implements Runnable{
                         serverSocket.send(errorPacket);
                         break;
                     }
-*/
-try{
-    f.getParentFile().mkdirs(); //Caso tenha subpastas até chegar ao ficheiro
-}
-catch(NullPointerException e)
-{
-}
-//f.createNewFile(); //Criamos o ficheiro em memória
-Main.addFile(f);
                     //Depois de criar ficheiro abrir thread para fazer transferência do mesmo
                     FileDataHandler fdh = new FileDataHandler(f,receivePacket.getAddress(),receivePacket.getPort());
                     Thread t = new Thread(fdh);
