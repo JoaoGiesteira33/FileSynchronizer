@@ -35,7 +35,7 @@ public class Client implements Runnable {
 
     public void run() {
         while(true){
-            this.ths = new ArrayList();
+            this.ths = new ArrayList<>();
         try {
             DatagramSocket clientSocket = new DatagramSocket();
             
