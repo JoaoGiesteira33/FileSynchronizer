@@ -90,7 +90,7 @@ public class Client implements Runnable {
                     break;
                 } // Pacote não foi recebido, por isso reenviamos
                 else if(ackSequence == 0){ //Error sign
-                    LoggerUtil.getLogger(" Erro na conexao. Terminando.");
+                    LoggerUtil.getLogger().severe(" Erro na conexao. Terminando.");
                     socket.close();
                     return;
                 }

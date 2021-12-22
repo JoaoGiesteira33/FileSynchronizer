@@ -88,10 +88,10 @@ public class FileDataHandler implements Runnable{
             }
         }catch(FileNotFoundException e){ //Erro a escrever no ficheiro
             LoggerUtil.getLogger().severe("S || " + e.getMessage());
-            byte[] errorFileWriting = new byte[]{Integer.valueOf(4).byteValue(),Integer.valueOf(2).byteValue()};
-            DatagramPacket errorFileWritingPack = new DatagramPacket(errorFileWriting, errorFileWriting.length,receivePacket.getAddress(),receivePacket.getPort());
-            socket.send(errorAlreadyExistsPacket);
-            this.socket.close(); //Acabar conexão
+            /*byte[] errorFileWriting = new byte[]{Integer.valueOf(4).byteValue(),Integer.valueOf(2).byteValue()};
+            DatagramPacket errorFileWritingPack = new DatagramPacket(errorFileWriting, errorFileWriting.length,receivedPacket.getAddress(),receivedPacket.getPort());
+            socket.send(errorFileWritingPack);
+            this.socket.close(); //Acabar conexão*/
         } catch(IOException e){
             LoggerUtil.getLogger().warning("S || " + e.getMessage());
         }
