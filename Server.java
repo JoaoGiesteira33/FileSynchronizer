@@ -48,12 +48,10 @@ public class Server implements Runnable{
                     File f = new File(Main.changeFilePath(file_path));
                     try{                     
                         try{
-
                             f.getParentFile().mkdirs();
                         }
                         catch(NullPointerException e)
                         {
-                            System.out.println("NAO E PRECISO!!");
                         }
                         f.createNewFile();
                         Main.addFile(f);
@@ -89,6 +87,7 @@ public class Server implements Runnable{
                     LoggerUtil.getLogger().severe("S || " + e.getMessage());
                 }
             }
+            serverSocket.close();
         } catch (Exception e) {
             LoggerUtil.getLogger().severe("S || " + e.getMessage());
         }

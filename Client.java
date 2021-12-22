@@ -34,13 +34,12 @@ public class Client implements Runnable {
     }
 
     public void run() {
-        while(true){
-            this.ths = new ArrayList<>();
-        try {
+        try{
             DatagramSocket clientSocket = new DatagramSocket();
-            
             byte[] sendData = new byte[128]; // Data a enviar
-
+            
+            while(true){
+                this.ths = new ArrayList<>();
             for(File f : Main.filesToSync){
                 
                 //Criação de uma mensagem com o nome do ficheiro (TIPO 1)
@@ -94,19 +93,7 @@ public class Client implements Runnable {
                         FileDataSender fds = new FileDataSender(fileByteArray, answerIP, answerPort);
                         Thread t = new Thread(fds);
                         this.ths.add(t);
-                        //t.start();
-/*
-                        //Informação para tempo de transferência e débito final
-                        long startTime = System.nanoTime();
-                        long totalUpload = f.getTotalSpace() * 8; //bits
-
-                        sendFile(clientSocket, fileByteArray, answerIP, answerPort); //Envio de ficheiro
-
-                        long transferTime = ((System.nanoTime() - startTime) / 1000000000);
-                        float bitsPerSec = (float)totalUpload / transferTime;
-                        System.out.println("C || F: " + f.getPath() + " | bps: " + bitsPerSec);
-                        System.out.println("C || F: " + f.getPath() + " | Time of transfer: " + transferTime + " secs");
-                        */
+                        t.start();
                     }
                     else if(answerMessage.getType() == 4) //Servidor não deseja ficheiro
                     {
@@ -117,17 +104,16 @@ public class Client implements Runnable {
                     }
                 }
             }
-            for(Thread t : this.ths){
-                t.start();           
+            Main.updateFiles();
+        
+        for(Thread t : this.ths){
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                LoggerUtil.getLogger().severe("C || " + e.getMessage());
             }
-            for(Thread t : this.ths){
-                try {
-                    t.join();
-                } catch (InterruptedException e) {
-                    LoggerUtil.getLogger().severe("C || " + e.getMessage());
-                }
-            }
-            clientSocket.close();
+        }
+    }
         } catch (SocketException ex) {
             LoggerUtil.getLogger().severe("C || " + ex.getMessage());
         } catch (UnknownHostException ex) {
@@ -135,7 +121,6 @@ public class Client implements Runnable {
         } catch (IOException ex) {
             LoggerUtil.getLogger().severe("C || " + ex.getMessage());
         }
-        Main.updateFiles();
-    }
+        
     }
 }
