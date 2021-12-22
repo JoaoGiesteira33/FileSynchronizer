@@ -113,11 +113,11 @@ public class Client implements Runnable {
                 
                 //Criação de uma mensagem com o nome do ficheiro (TIPO 1)
                 String file_path = f.getPath();
-                Message send_m = new Message(1,f.getPath().length(),file_path.getBytes());
+                Message send_m = new Message(1,f.getPath().length(),file_path.getBytes(),Main.password.length(),Main.password.getBytes());
                 sendData = send_m.getBytes();
 
                 for(InetAddress i : this.ips){
-
+                    
                     //Envio da mensagem para todos os ips conhecidos
                     DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, i, 8888);
                     clientSocket.send(sendPacket);

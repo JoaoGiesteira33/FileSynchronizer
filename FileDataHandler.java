@@ -58,7 +58,7 @@ public class FileDataHandler implements Runnable{
                 // Verificar se chegamos ao fim do ficheiro
                 flag = received_m.isLastPacket();
 
-                // Está correto se numero de sequncia for mais 1 que o visto anteriormente
+                // Está correto se numero de sequência for mais 1 que o visto anteriormente
                 if (sequenceNumber == (foundLast + 1)) {
                     // Atualizar último número de sequência recebido
                     foundLast = sequenceNumber;

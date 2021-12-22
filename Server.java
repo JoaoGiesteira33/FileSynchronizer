@@ -40,6 +40,15 @@ public class Server implements Runnable{
                 int file_size = file_sizeB.intValue();
                 String file_path =  new String(Arrays.copyOfRange(received_m.getData(),1,file_size+1));
 
+                //Servidor verifica password
+                Byte password_sizeB = received_m.getData()[file_size+1];
+                int password_size = password_sizeB.intValue();
+                String password_try = new String(Arrays.copyOfRange(received_m.getData(),file_size+2,file_size+2+password_size));
+
+                if(!password_try.equals(Main.password)){
+                    System.out.println("DIFFERENT PASSWORDS!");
+                }
+
                 LoggerUtil.getLogger().info("S || Questionado se queremos o seguinte ficheiro: " + file_path);
 
                 if(!Main.hasFile(file_path)){ //Computador do Servidor não tem o ficheiro recebido

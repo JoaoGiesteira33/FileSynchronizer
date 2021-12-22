@@ -16,10 +16,10 @@ FT-Rapid Protocol
 
     3.1) WriteFileRequest (RRQ)
 
-           1byte   1byte     string
-        +--------+--------+----------+
-        | opcode |  size  | filename |
-        +--------+--------+----------+
+           1byte   1byte    string     1byte     string
+        +--------+--------+----------+--------+----------+
+        | opcode |  size  | filename |  size  | password |
+        +--------+--------+----------+--------+----------+
 
     3.2) Data (DATA)
         
@@ -50,7 +50,7 @@ FT-Rapid Protocol
 
         0 - Não Defenido
         1 - Ficheiro Já Existe
-        2 - Erro a Criar Ficheiro
+        2 - Erro a Criar/Escrever Ficheiro
         ...
 
     3.5) WantFile (WF)

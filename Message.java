@@ -15,13 +15,16 @@ public class Message{
     }
 
     //WriteFileRequest Constructor
-    public Message(int type, int filePathSize, byte[] filePath){
+    public Message(int type, int filePathSize, byte[] filePath, int passwordSize, byte[] password){
         this.type = Integer.valueOf(type).byteValue();
         byte[] filePathSizeArr = new byte[]{Integer.valueOf(filePathSize).byteValue()};
+        byte[] passwordSizeArr = new byte[]{Integer.valueOf(passwordSize).byteValue()};
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try{
             outputStream.write( filePathSizeArr );
             outputStream.write( filePath );
+            outputStream.write( passwordSizeArr );
+            outputStream.write( password );
         }
         catch(IOException e){
             LoggerUtil.getLogger().severe(e.getMessage());

@@ -9,6 +9,7 @@ public class Main {
     public static String folderToSync;
     public static List<File> filesToSync;
     public static List<File> addedFiles = new ArrayList<>();
+    public static String password;
 
     public static String getFolder(){
         return Main.folderToSync;
@@ -66,8 +67,10 @@ public class Main {
         folderToSync = args[0];
         LoggerUtil.getLogger().info("Pasta a sincronizar=" + folderToSync);
 
+        password = args[1];
+
         List<String> ips = new ArrayList<>();
-        for (int i = 1; i < args.length; i++) {
+        for (int i = 2; i < args.length; i++) {
             ips.add(args[i]);
             LoggerUtil.getLogger().info("IP" + i + "=" + args[i]);
         }
@@ -94,6 +97,5 @@ public class Main {
         catch(InterruptedException e){
             LoggerUtil.getLogger().severe(e.getMessage());
         } 
-        
     }
 }
