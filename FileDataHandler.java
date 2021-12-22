@@ -81,6 +81,7 @@ public class FileDataHandler implements Runnable{
                 }
                 // Se for último pacote do ficheiro podemos fechar
                 if (flag) {
+                    outToFile.flush();
                     outToFile.close();
                     this.socket.close();
                     break;

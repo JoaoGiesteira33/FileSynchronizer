@@ -96,8 +96,8 @@ public class Client implements Runnable {
         }
         long transferTime = ((System.nanoTime() - startTime) / 1000000000);
         float bitsPerSec = (float)totalUpload / transferTime;
-        System.out.println("C || F | bps: " + bitsPerSec);
-        System.out.println("C || F | Time of transfer: " + transferTime + " secs");
+        System.out.println("C || bps: " + bitsPerSec);
+        System.out.println("C || Time of transfer: " + transferTime + " secs");
     }catch(Exception e){
         LoggerUtil.getLogger().severe("C || " + e.getMessage());
     }

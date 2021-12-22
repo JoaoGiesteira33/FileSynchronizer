@@ -63,7 +63,7 @@ public class Server implements Runnable{
                         catch(NullPointerException e)
                         {
                         }
-                        f.createNewFile(); //Criamos o ficheiro em memória
+                        //f.createNewFile(); //Criamos o ficheiro em memória
                         Main.addFile(f);
                     }
                     catch(IOException e){
