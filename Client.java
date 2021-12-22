@@ -117,7 +117,7 @@ public class Client implements Runnable {
                 
                 //Criação de uma mensagem com o nome do ficheiro (TIPO 1)
                 String file_path = f.getPath();
-                Message send_m = new Message(1,f.getPath().length(),file_path.getBytes("UTF-8"),Main.password.length(),Main.password.getBytes("UTF-8"));
+                Message send_m = new Message(1,f.getPath().length(),file_path.getBytes(),Main.password.length(),Main.password.getBytes());
                 sendData = send_m.getBytes();
 
                 for(InetAddress i : this.ips){
