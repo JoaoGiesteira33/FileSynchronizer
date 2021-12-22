@@ -152,7 +152,7 @@ public class Client implements Runnable {
                         FileDataSender fds = new FileDataSender(fileByteArray, answerIP, answerPort);
                         Thread t = new Thread(fds);
                         this.ths.add(t);
-                        t.start();
+                        //t.start();
 /*
                         //Informação para tempo de transferência e débito final
                         long startTime = System.nanoTime();
@@ -174,6 +174,9 @@ public class Client implements Runnable {
                         LoggerUtil.getLogger().warning("C || Mensagem não reconhecida!");
                     }
                 }
+            }
+            for(Thread t : this.ths){
+                t.start();           
             }
             for(Thread t : this.ths)
                 try {
