@@ -88,22 +88,16 @@ public class Client implements Runnable {
                 if ((ackSequence == sequenceNumber) && (ackRec)) {
                     LoggerUtil.getLogger().info("C || Ack recebido, sequence number = " + ackSequence);
                     break;
-                } // Pacote não foi recebido, por isso reenviamos
-                else if(ackSequence == 0){ //Error sign
-                    LoggerUtil.getLogger().severe(" Erro na conexao. Terminando.");
-                    socket.close();
-                    return;
-                }
-                else {
+                } else { //Pacote não recebido, por isso reenviamos
                     socket.send(sendPacket);
                     LoggerUtil.getLogger().warning("C || Reenviando, sequence number = " + sequenceNumber);
                 }
             }
         }
         long transferTime = ((System.nanoTime() - startTime) / 1000000000);
-            float bitsPerSec = (float)totalUpload / transferTime;
-            System.out.println("C || F | bps: " + bitsPerSec);
-            System.out.println("C || F | Time of transfer: " + transferTime + " secs");
+        float bitsPerSec = (float)totalUpload / transferTime;
+        System.out.println("C || F | bps: " + bitsPerSec);
+        System.out.println("C || F | Time of transfer: " + transferTime + " secs");
     }catch(Exception e){
         LoggerUtil.getLogger().severe("C || " + e.getMessage());
     }
