@@ -5,7 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Client implements Runnable {
-    List<InetAddress> ips;
+    private List<InetAddress> ips;
+    private List<Thread> ths;
 
     public Client(List<String> ipsString) {
         this.ips = new ArrayList<>();
@@ -147,6 +148,11 @@ public class Client implements Runnable {
                         LoggerUtil.getLogger().info("C || Resposta positiva, iniciar transferencia de: " + file_path);
                         byte[] fileByteArray = readFileToByteArray(f); // Array de bytes do ficheiro
 
+                        FileDataSender fds = new FileDataSender(fileByteArray, answerIP, answerPort);
+                        Thread t = new Thread(fds);
+                        this.ths.add(t);
+                        t.start();
+/*
                         //Informação para tempo de transferência e débito final
                         long startTime = System.nanoTime();
                         long totalUpload = f.getTotalSpace() * 8; //bits
@@ -157,6 +163,7 @@ public class Client implements Runnable {
                         float bitsPerSec = (float)totalUpload / transferTime;
                         System.out.println("C || F: " + f.getPath() + " | bps: " + bitsPerSec);
                         System.out.println("C || F: " + f.getPath() + " | Time of transfer: " + transferTime + " secs");
+                        */
                     }
                     else if(answerMessage.getType() == 4) //Servidor não deseja ficheiro
                     {
@@ -167,6 +174,12 @@ public class Client implements Runnable {
                     }
                 }
             }
+            for(Thread t : this.ths)
+                try {
+                    t.join();
+                } catch (InterruptedException e) {
+                    LoggerUtil.getLogger().severe("C || " + e.getMessage());
+                }
             clientSocket.close();
         } catch (SocketException ex) {
             LoggerUtil.getLogger().severe("C || " + ex.getMessage());
