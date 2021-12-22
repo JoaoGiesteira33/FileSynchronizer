@@ -146,7 +146,17 @@ public class Client implements Runnable {
                     if(answerMessage.getType() == 5){ //Servidor deseja ficheiro
                         LoggerUtil.getLogger().info("C || Resposta positiva, iniciar transferencia de: " + file_path);
                         byte[] fileByteArray = readFileToByteArray(f); // Array de bytes do ficheiro
+
+                        //Informação para tempo de transferência e débito final
+                        long startTime = System.nanoTime();
+                        long totalUpload = f.getTotalSpace() * 8; //bits
+
                         sendFile(clientSocket, fileByteArray, answerIP, answerPort); //Envio de ficheiro
+
+                        long transferTime = ((System.nanoTime() - startTime) / 1000000000);
+                        float bitsPerSec = (float)totalUpload / transferTime;
+                        System.out.println("C || F: " + f.getPath() + " | bps: " + bitsPerSec);
+                        System.out.println("C || F: " + f.getPath() + " | Time of transfer: " + transferTime);
                     }
                     else if(answerMessage.getType() == 4) //Servidor não deseja ficheiro
                     {
