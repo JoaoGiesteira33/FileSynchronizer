@@ -10,6 +10,7 @@ public class Client implements Runnable {
 
     public Client(List<String> ipsString) {
         this.ips = new ArrayList<>();
+        this.ths = new ArrayList<>();
         try{
             for(String ip : ipsString){
                 this.ips.add(InetAddress.getByName(ip));
