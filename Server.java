@@ -47,6 +47,7 @@ public class Server implements Runnable{
 
                 if(!password_try.equals(Main.password)){
                     System.out.println("DIFFERENT PASSWORDS!");
+                    break;
                 }
 
                 LoggerUtil.getLogger().info("S || Questionado se queremos o seguinte ficheiro: " + file_path);
