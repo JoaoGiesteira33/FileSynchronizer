@@ -86,12 +86,17 @@ public class Client implements Runnable {
 
                 // Recebemos o ACK correto, podemos enviar próxima parte do ficheiro
                 if ((ackSequence == sequenceNumber) && (ackRec)) {
-                    LoggerUtil.getLogger().info("C || Ack received: Sequence Number = " + ackSequence);
+                    LoggerUtil.getLogger().info("C || Ack recebido, sequence number = " + ackSequence);
                     break;
                 } // Pacote não foi recebido, por isso reenviamos
+                else if(ackSequence == 0){ //Error sign
+                    LoggerUtil.getLogger(" Erro na conexao. Terminando.");
+                    socket.close();
+                    return;
+                }
                 else {
                     socket.send(sendPacket);
-                    LoggerUtil.getLogger().warning("C || Resending: Sequence Number = " + sequenceNumber);
+                    LoggerUtil.getLogger().warning("C || Reenviando, sequence number = " + sequenceNumber);
                 }
             }
         }
@@ -139,7 +144,7 @@ public class Client implements Runnable {
                             gotAnswer = true;
                         } catch (SocketTimeoutException e) {
                             LoggerUtil.getLogger().info("C || Socket timed out a espera da resposta");
-                            gotAnswer = false; // We did not receive an ack
+                            gotAnswer = false; // Não recebemos ACK
                         }
         
                         // Pacote foi recebido e servidor confirmou

@@ -49,15 +49,14 @@ public class FileDataHandler implements Runnable{
                 // Receber pacote
                 DatagramPacket receivedPacket = new DatagramPacket(message, message.length);
                 socket.receive(receivedPacket);
-                message = receivedPacket.getData(); // Data to be written to the file
+                message = receivedPacket.getData();
                 Message received_m = new Message(message);
 
                 // Obter número de sequência para verificar
                 sequenceNumber = received_m.getPacketNumber();
+
                 // Verificar se chegamos ao fim do ficheiro
                 flag = received_m.isLastPacket();
-                if(flag)
-                    System.out.println("OH SHIT!!!");
 
                 // Está correto se numero de sequncia for mais 1 que o visto anteriormente
                 if (sequenceNumber == (foundLast + 1)) {
@@ -87,9 +86,12 @@ public class FileDataHandler implements Runnable{
                     break;
                 }
             }
-        }catch(FileNotFoundException e){
+        }catch(FileNotFoundException e){ //Erro a escrever no ficheiro
             LoggerUtil.getLogger().severe("S || " + e.getMessage());
-            //SEND ERROR PACKAGE
+            byte[] errorFileWriting = new byte[]{Integer.valueOf(4).byteValue(),Integer.valueOf(2).byteValue()};
+            DatagramPacket errorFileWritingPack = new DatagramPacket(errorFileWriting, errorFileWriting.length,receivePacket.getAddress(),receivePacket.getPort());
+            socket.send(errorAlreadyExistsPacket);
+            this.socket.close(); //Acabar conexão
         } catch(IOException e){
             LoggerUtil.getLogger().warning("S || " + e.getMessage());
         }

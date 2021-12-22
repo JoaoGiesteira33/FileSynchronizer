@@ -48,12 +48,12 @@ public class Server implements Runnable{
                     File f = new File(Main.changeFilePath(file_path));
                     try{                     
                         try{
-                            f.getParentFile().mkdirs();
+                            f.getParentFile().mkdirs(); //Caso tenha subpastas até chegar ao ficheiro
                         }
                         catch(NullPointerException e)
                         {
                         }
-                        f.createNewFile();
+                        f.createNewFile(); //Criamos o ficheiro em memória
                         Main.addFile(f);
                     }
                     catch(IOException e){
