@@ -67,7 +67,7 @@ public class Client implements Runnable {
                 DatagramPacket ackpack = new DatagramPacket(ack, ack.length);
 
                 try {
-                    socket.setSoTimeout(200); // Esperar que o servidor envie um ACK
+                    socket.setSoTimeout(50); // Esperar que o servidor envie um ACK
                     socket.receive(ackpack);
                     Message received_m = new Message(ackpack.getData());
                     ackSequence = received_m.getPacketNumber(); //Número de pacote no ACK
@@ -156,7 +156,7 @@ public class Client implements Runnable {
                         long transferTime = ((System.nanoTime() - startTime) / 1000000000);
                         float bitsPerSec = (float)totalUpload / transferTime;
                         System.out.println("C || F: " + f.getPath() + " | bps: " + bitsPerSec);
-                        System.out.println("C || F: " + f.getPath() + " | Time of transfer: " + transferTime);
+                        System.out.println("C || F: " + f.getPath() + " | Time of transfer: " + transferTime + " secs");
                     }
                     else if(answerMessage.getType() == 4) //Servidor não deseja ficheiro
                     {
