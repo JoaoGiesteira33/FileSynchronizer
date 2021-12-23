@@ -12,26 +12,26 @@ public class TCPserver implements Runnable{
     private int port;
     private String message;
     private boolean onOff;
+    private List<String> ips;
 
     public TCPserver(int port,List<String> ips) {
         this.port = port;
+        this.ips = ips;
         try {
             this.ss = new ServerSocket(port);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.onOff = true;  
-        StringBuilder sb = new StringBuilder();
-        sb.append("Sincronizando para os seguintes utilizadores: \n");
-        for(String ip : ips){
-            sb.append(ip + "\n");
+        this.onOff = true;
+        this.message = "Sincronizando para os seguintes utilizadores:";
+        for(String ip : this.ips){
+            addMessage(ip);
         }
-        sb.append("Sincronizando os seguintes ficheiros: \n");
+        addMessage("Sincronizando os seguintes ficheiros:");
         for(File f : Main.filesToSync)
         {
-            sb.append(f.getPath() + "\n");
+            addMessage(f.getPath());
         }
-        this.message = sb.toString();
     }
 
     public int getPort() {
@@ -83,6 +83,15 @@ public class TCPserver implements Runnable{
                 Socket socket = ss.accept();
                 OutputStream os = socket.getOutputStream();
                 String response = writeMessage(message);
+                this.message = "Sincronizando para os seguintes utilizadores:";
+                for(String ip : ips){
+                    addMessage(ip);
+                }
+                addMessage("Sincronizando os seguintes ficheiros:");
+                for(File f : Main.filesToSync)
+                {
+                    addMessage(f.getPath());
+                }
                 os.write(response.getBytes());
                 os.flush();
                 os.close();
