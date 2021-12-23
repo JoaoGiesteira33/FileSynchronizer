@@ -66,7 +66,7 @@ public class Client implements Runnable {
             sendData = m.getBytes();
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, port);
             socket.send(sendPacket);
-            LoggerUtil.getLogger().info("C || Sent: Sequence number = " + sequenceNumber);
+            LoggerUtil.getLogger().info("C || Enviado sequence number = " + sequenceNumber);
             boolean ackRec; // Recebemos um ack
 
             while (true) {

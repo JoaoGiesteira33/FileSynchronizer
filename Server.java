@@ -46,7 +46,7 @@ public class Server implements Runnable{
                 String password_try = new String(Arrays.copyOfRange(received_m.getData(),file_size+2,file_size+2+password_size));
 
                 if(!password_try.equals(Main.password)){
-                    System.out.println("DIFFERENT PASSWORDS!");
+                    System.out.println("Password Incorreta! Ligacao Cancelada");
                     continue;
                 }
 
@@ -74,7 +74,7 @@ public class Server implements Runnable{
                         serverSocket.send(errorPacket);
                         break;
                     }
-                    
+
                     //Depois de criar ficheiro abrir thread para fazer transferência do mesmo
                     FileDataHandler fdh = new FileDataHandler(f,receivePacket.getAddress(),receivePacket.getPort());
                     Thread t = new Thread(fdh);

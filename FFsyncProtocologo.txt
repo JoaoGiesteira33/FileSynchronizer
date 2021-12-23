@@ -23,7 +23,7 @@ FT-Rapid Protocol
 
     3.2) Data (DATA)
         
-           1byte    3 bytes    1byte    nbytes
+           1byte    3 bytes    2byte    nbytes
         +--------+-----------+--------+--------+
         | opcode |  Packet # |  size  |  Data  |
         +--------+-----------+--------+--------+    
