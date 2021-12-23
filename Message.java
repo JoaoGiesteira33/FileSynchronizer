@@ -42,7 +42,7 @@ public class Message{
 
         byte[] file_size_arr = new byte[2];
         file_size_arr[0] =  (byte) ((file_size & 0x0000FF00) >> 8);
-        file_size_arr[1] =  (byte) ((packetNumber& 0x000000FF) >> 0);
+        file_size_arr[1] =  (byte) ((file_size & 0x000000FF) >> 0);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try{

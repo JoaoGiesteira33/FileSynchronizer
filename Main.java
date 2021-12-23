@@ -61,6 +61,16 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        /*
+        Message m = new Message(2,11,2048,"abc".getBytes());
+        byte[] data = new byte[2054];
+        data = m.getBytes();
+
+        Message m2 = new Message(data);
+        System.out.print("Message size = " + m2.fileDataSize());
+        System.out.print("Is last packet = " + m2.isLastPacket());
+
+        */
         if (args.length < 2) {
             LoggerUtil.getLogger().warning("Argumentos insuficientes");
             return;
@@ -98,5 +108,6 @@ public class Main {
         catch(InterruptedException e){
             LoggerUtil.getLogger().severe(e.getMessage());
         } 
+        
     }
 }

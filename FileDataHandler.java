@@ -63,7 +63,7 @@ public class FileDataHandler implements Runnable{
                     // Atualizar último número de sequência recebido
                     foundLast = sequenceNumber;
 
-                    // Data do ficheiro, apenas a partir do 5 byte é que começa
+                    // Data do ficheiro, apenas a partir do 6 byte é que começa
                     int fileDataSize = received_m.fileDataSize();
                     byte[] fileByteArray = new byte[fileDataSize];
                     System.arraycopy(message, 6, fileByteArray, 0, fileDataSize);
