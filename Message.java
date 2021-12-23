@@ -39,8 +39,11 @@ public class Message{
         packetNumberArr[0] = (byte) ((packetNumber & 0x00FF0000) >> 16);
         packetNumberArr[1] = (byte) ((packetNumber& 0x0000FF00) >> 8);
         packetNumberArr[2] = (byte) ((packetNumber& 0x000000FF) >> 0);
-        byte[] file_size_arr = new byte[1];
-        file_size_arr[0] =  (byte) ((file_size & 0x000000FF));
+
+        byte[] file_size_arr = new byte[2];
+        file_size_arr[0] =  (byte) ((file_size & 0x0000FF00) >> 8);
+        file_size_arr[1] =  (byte) ((packetNumber& 0x000000FF) >> 0);
+
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try{
             outputStream.write( packetNumberArr );
@@ -94,7 +97,7 @@ public class Message{
     }
 
     public boolean isLastPacket(){
-        return(Byte.toUnsignedInt(this.data[3]) < 255 && this.getType() == 2);
+        return(this.getType() == 2 && this.fileDataSize() < 2048);
     }
 
     public void printData(){
@@ -104,7 +107,7 @@ public class Message{
     public int fileDataSize(){
         if(this.getType() != 2)
             return 0;
-        return Byte.toUnsignedInt(this.data[3]);
+        return byteToInt(new byte[]{this.data[3],this.data[4]}, 2);
     }
 
     private int byteToInt(byte[] bytes, int length) {

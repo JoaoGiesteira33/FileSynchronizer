@@ -39,27 +39,27 @@ public class Client implements Runnable {
             long startTime = System.nanoTime();
             long totalUpload = fileByteArray.length * 8; //bits
 
-        byte[] sendData = new byte[260]; //Tamanho máximo de um pacote
+        byte[] sendData = new byte[2054]; //Tamanho máximo de um pacote
         LoggerUtil.getLogger().info("Sending file");
         int sequenceNumber = 0; // Para ordenar envio de pacotes
         int ackSequence = 0; // Verificar se o pacote foi enviado corretamente
         boolean flag; //Ultimo pacote
 
-        for (int i = 0; i < fileByteArray.length; i += 255) {
+        for (int i = 0; i < fileByteArray.length; i += 2048) {
             sequenceNumber++;
 
             // Cria uma mensagem, que muda se o ficheiro já chegou ao fim
             Message m;
-            if ((i + 255) >= fileByteArray.length) { // Chegamos ao fim do ficheiro
+            if ((i + 2048) >= fileByteArray.length) { // Chegamos ao fim do ficheiro
                 flag = true;
             } else { //Ainda não chegamos ao fim 
                 flag = false;
             }
             if(flag){
-                m = new Message(2, sequenceNumber, fileByteArray.length - i, Arrays.copyOfRange(fileByteArray,i,i+254));
+                m = new Message(2, sequenceNumber, fileByteArray.length - i, Arrays.copyOfRange(fileByteArray,i,i+2047));
             }
             else{
-                m = new Message(2,sequenceNumber,255, Arrays.copyOfRange(fileByteArray,i,i+254));
+                m = new Message(2,sequenceNumber,2048, Arrays.copyOfRange(fileByteArray,i,i+2047));
             }
 
             //Enviar pacote com parte do ficheiro

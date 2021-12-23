@@ -54,10 +54,9 @@ public class Server implements Runnable{
 
                 if(!Main.hasFile(file_path)){ //Computador do Servidor não tem o ficheiro recebido
                     LoggerUtil.getLogger().info("S || Queremos o ficheiro: " + file_path);
-
                     File f = new File(Main.changeFilePath(file_path));
-                    Main.addFile(f);
-                   /* try{                     
+        
+                   try{                     
                         try{
                             f.getParentFile().mkdirs(); //Caso tenha subpastas até chegar ao ficheiro
                         }
@@ -74,7 +73,8 @@ public class Server implements Runnable{
                         DatagramPacket errorPacket = new DatagramPacket(error, error.length,receivePacket.getAddress(),receivePacket.getPort());
                         serverSocket.send(errorPacket);
                         break;
-                    }*/
+                    }
+                    
                     //Depois de criar ficheiro abrir thread para fazer transferência do mesmo
                     FileDataHandler fdh = new FileDataHandler(f,receivePacket.getAddress(),receivePacket.getPort());
                     Thread t = new Thread(fdh);
