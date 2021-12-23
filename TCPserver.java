@@ -1,5 +1,7 @@
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket; 
 import java.net.Socket; 
 import java.util.ArrayList;
@@ -11,15 +13,25 @@ public class TCPserver implements Runnable{
     private String message;
     private boolean onOff;
 
-    public TCPserver(int port) {
+    public TCPserver(int port,List<String> ips) {
         this.port = port;
         try {
             this.ss = new ServerSocket(port);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.onOff = true;
-        this.message = "Running";
+        this.onOff = true;  
+        StringBuilder sb = new StringBuilder();
+        sb.append("Sincronizando para os seguintes utilizadores: \n");
+        for(String ip : ips){
+            sb.append(ip + "\n");
+        }
+        sb.append("Sincronizando os seguintes ficheiros: \n");
+        for(File f : Main.filesToSync)
+        {
+            sb.append(f.getPath() + "\n");
+        }
+        this.message = sb.toString();
     }
 
     public int getPort() {

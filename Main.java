@@ -80,7 +80,7 @@ public class Main {
 
         Server myServer = new Server();
         Client myClient = new Client(ips);
-        TCPserver myTCPserver = new TCPserver(8080);
+        TCPserver myTCPserver = new TCPserver(8080,ips);
         
         Thread t1 = new Thread(myServer);
         Thread t2 = new Thread(myClient);
